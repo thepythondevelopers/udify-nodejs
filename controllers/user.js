@@ -51,7 +51,8 @@ exports.signin = (req,res) =>{
     bcrypt.compare(req.body.password, user.password, function (err, result) {
       if (result == true) {
           //create token
-        var token = jwt.sign({ _id: user._id }, process.env.SECRET);
+          
+        var token = jwt.sign({ id: user.guid }, process.env.SECRET);
         //create cookie
         res.cookie("token",token,{expire : new Date() + 9999});
         // send response
@@ -77,11 +78,11 @@ exports.updateUser = (req,res)=>{
             error : errors.array()
         })
     }
-    const id = req.params.id;
+    const id = req.user.id;
     content =  { 
         first_name: req.body.first_name, 
         last_name: req.body.last_name,
-        email: req.body.email,
+        // email: req.body.email,
         phone: req.body.phone
     }
     
@@ -94,7 +95,7 @@ exports.updateUser = (req,res)=>{
      }
     )
     .then(data => {
-      res.send(data);
+      res.send('Successfully Updated');
     })
     .catch(err => {
       res.status(500).send({
@@ -186,6 +187,26 @@ exports.updateUser = (req,res)=>{
       res.status(500).send({
         message:
           err.message || "Some error occurred while updating password."
+      });
+    });
+  }
+
+  exports.get_profile = (req,res)=>{
+
+    User.findOne({
+      where: {
+        guid: req.user.id
+             }
+    }).then(function (user) {
+     if (!user) {
+        res.json('User Not Found.');
+     } else {
+      res.json(user);
+     }
+    }).catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while getting user."
       });
     });
   }
