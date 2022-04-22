@@ -6,6 +6,9 @@ const {validationResult} = require("express-validator");
 const bcrypt = require("bcrypt");
 var jwt = require('jsonwebtoken');
 require('dotenv').config();
+const sendGridMail = require('@sendgrid/mail');
+sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
+const stripe = require('stripe')(process.env.STRIPE_KEY);
 // var expressJwt = require('express-jwt');
 
 exports.signup = (req,res)=>{
@@ -105,7 +108,7 @@ exports.updateUser = (req,res)=>{
     });   
   }
 
-  exports.forget_password = (req,res)=>{
+  exports.forget_password =  (req,res)=>{
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(402).json({
@@ -132,9 +135,28 @@ exports.updateUser = (req,res)=>{
       { where: { email: req.body.email }
      }
     )
-    .then(data => {
+    .then(async data => {
+      
       url = process.env.BASE_URL+'api/confirm-password/'+token
-      res.send(url);
+
+      try {
+        await sendGridMail.send(forgetpassword_email(req.body.email,url));
+        console.log('Test email sent successfully');
+        res.send({url:url,message:'Email Send Successfully'});
+      } catch (error) {
+        res.status(500).send({
+          message:
+            error.message || "Some error occurred while generating reset password."
+        });
+        // if (error.response) {
+        //   console.error(error.response.body)
+        // }
+      }
+
+
+
+
+      
     })
     .catch(err => {
       res.status(500).send({
@@ -210,3 +232,27 @@ exports.updateUser = (req,res)=>{
       });
     });
   }
+
+  function forgetpassword_email(email,url) {
+    const body = `<p>Hello, Please click on the <a href="${url}">Link</a> to change the password</p>`;
+    return {
+      to: email,
+      from: process.env.SENDGRID_FROM_ADDRESS,
+      subject: 'Password Reset',
+      text: body,
+      html: `<strong>${body}</strong>`,
+    };
+  }
+  
+  exports.stripe = async (req,res)=>{
+      const charge = await stripe.charges.create({
+      amount: 2000,
+      currency: 'usd',
+      source: 'tok_mastercard',
+      description: 'My First Test Charge (created for API docs)',
+    });
+    console.log(charge);
+  }
+
+
+  
