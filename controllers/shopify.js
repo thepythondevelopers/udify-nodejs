@@ -3,7 +3,7 @@ const db = require("../models");
 require('dotenv').config();
 const Integration = db.integration;
 const ShopifyToken = require('shopify-token');
-const { json } = require('body-parser');
+//const { json } = require('body-parser');
 
 const Op = db.Sequelize.Op;
 exports.getCustomer = (req,res) =>{

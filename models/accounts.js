@@ -29,8 +29,8 @@ module.exports = (sequelize, Sequelize) => {
         required : true,
         allowNull: false,
       },
-	public_id:{
-        type: Sequelize.CHAR(5),
+      public_id:{
+        type: Sequelize.CHAR(32),
         required : true,
         allowNull: false,
     },

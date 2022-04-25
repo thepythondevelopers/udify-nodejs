@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const redis = require('redis');
 
 //Routes
+const syncShopifyRoutes = require("./routes/sync_shopify");
 const shopifyRoutes = require("./routes/shopify");
 const accountRoutes = require("./routes/account");
 const integrationRoutes = require("./routes/integration");
@@ -43,6 +44,7 @@ app.use('/api',accountRoutes);
 app.use('/api',integrationRoutes);
 app.use('/api',plaidRoutes);
 app.use('/api',userRoutes);
+app.use('/api',syncShopifyRoutes);
 
 const db = require("./models");
 

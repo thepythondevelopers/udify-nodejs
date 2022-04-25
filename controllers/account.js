@@ -6,10 +6,13 @@ const {validationResult} = require("express-validator");
 
 
 exports.createAccount = (req,res) =>{
+  
   guid = uuid();
   guid = guid.replace(/-/g,"");
   
   req.body.guid = guid;
+  req.body.public_id = req.user.id
+  
   Account
       .create(req.body)
       .then(account => {

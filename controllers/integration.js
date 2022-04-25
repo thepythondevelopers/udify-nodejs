@@ -6,7 +6,7 @@ const {validationResult} = require("express-validator");
 
  
 
-exports.createIntegration = (req,res) =>{
+exports.createIntegration =  (req,res) =>{
   
   const errors = validationResult(req);
   if(!errors.isEmpty()){
@@ -17,6 +17,7 @@ exports.createIntegration = (req,res) =>{
   guid = uuid();
   guid = guid.replace(/-/g,""); 
   req.body.guid = guid;
+    //return res.json(req.body.store_api_key);
       Integration
       .create(req.body)
       .then(integration => {

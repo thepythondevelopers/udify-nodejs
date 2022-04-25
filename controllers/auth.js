@@ -33,29 +33,18 @@ exports.verifyToken = (req, res, next) => {
 
 
 
-exports.isAccountCheck =(req,res,next)=>{
-    if(req.headers.account_id==null){
-            return res.status(404).json({
-                err  : "Acccount Id Not Found"
-            })
-      }
-      id = req.headers.account_id;
-      Account.findByPk(id)
-    .then(data => {
-      if (data==null) { 
-        res.status(404).send({
-          message: `Cannot find Account with id=${id}.`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error retrieving Account with id=" + id
-      });
-    });
+exports.isAccountCheck = async(req,res,next)=>{
+    
+  const acc = await Account.findOne({ where: { public_id: req.user.id } });
+if (acc === null) {
+  return res.status(404).json({
+    err  : "Account Not Found"
+})
+} else {
+  req.body.account_id = acc.guid;
+}
 
-    req.body.account_id = req.headers.account_id;
-      next();  
+    next();  
 }
 
 exports.roleCheck = (req,res,next) =>{
@@ -70,6 +59,7 @@ exports.roleCheck = (req,res,next) =>{
             err  : "Access Denied"
         })
     }
+    
  
     next();
 }
