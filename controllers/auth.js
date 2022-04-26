@@ -3,7 +3,9 @@ const Account = db.account;
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var jwt = require('jsonwebtoken');
+const { json } = require("body-parser");
 require('dotenv').config();
+const UserToken = db.userToken;
 // Protected Routes
 
 // exports.isSignedIn = expressJwt({
@@ -13,7 +15,7 @@ require('dotenv').config();
 //   console.log(req.user);
 //   console.log('Hello');
 // })
-exports.verifyToken = (req, res, next) => {
+exports.verifyToken = async (req, res, next) => {
   const token =
     req.body.token || req.query.token || req.headers["x-access-token"];
 
@@ -22,9 +24,25 @@ exports.verifyToken = (req, res, next) => {
   }
   try {
     const decoded = jwt.verify(token, process.env.SECRET);
-    req.user = decoded;
-  } catch (err) {
-    return res.status(401).send("Invalid Token");
+    
+    user_token = await UserToken.findOne({
+      where: {
+         token: token
+      }
+   });
+   if (user_token === null) {
+    return res.status(401).send({
+      message : "Token Not Found"
+    });
+  }
+  req.user = decoded;
+  
+    
+  } catch (err_m) {
+    return res.status(401).send({
+      message : "Invalid Token",
+      error :err_m
+    });
   }
   return next();
 };

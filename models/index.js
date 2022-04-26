@@ -14,6 +14,7 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
+db.userToken = require("./userToken.js")(sequelize, Sequelize);
 db.product = require("./products.js")(sequelize, Sequelize);
 db.productCustomData = require("./products_custom_data.js")(sequelize, Sequelize);
 db.productVariant = require("./product_variants.js")(sequelize, Sequelize);
@@ -22,7 +23,7 @@ db.setting = require("./setting.js")(sequelize, Sequelize);
 db.integration = require("./integration.js")(sequelize, Sequelize);
 db.user = require("./user.js")(sequelize, Sequelize);
 
-
+db.product.hasMany(db.productVariant,{ foreignKey: 'product_id', sourceKey: 'id'});
 //db.account.hasMany(db.setting);
 //db.setting.belongsTo(db.account);
 // db.integration.belongsTo(db.account);

@@ -2,6 +2,9 @@ const Shopify = require('shopify-api-node');
 const db = require("../models");
 require('dotenv').config();
 const Integration = db.integration;
+const Product = db.product;
+const ProductCustomData = db.productCustomData;
+const ProductVariant = db.productVariant;
 const ShopifyToken = require('shopify-token');
 //const { json } = require('body-parser');
 
@@ -113,6 +116,19 @@ exports.getProduct = (req,res) =>{
    
 }
 
+
+
+
+exports.getSingleProduct = async (req,res) =>{
+  const id = req.params.product_id;
+  result = await Product.findAll({
+    where: {id : id},
+    include: [{
+        model: ProductVariant
+    }]
+  })
+  return res.json(result);
+}
 
 exports.getShopify = (req,res) =>{
   const shopifyToken1 = new ShopifyToken({

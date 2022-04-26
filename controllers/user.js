@@ -1,9 +1,11 @@
 const uuid = require("uuid/v1");
 const db = require("../models");
 const User = db.user;
+const UserToken = db.userToken;
 const Op = db.Sequelize.Op;
 const {validationResult} = require("express-validator");
 const bcrypt = require("bcrypt");
+const { v4: uuidv4 } = require('uuid');
 var jwt = require('jsonwebtoken');
 require('dotenv').config();
 const sendGridMail = require('@sendgrid/mail');
@@ -51,13 +53,27 @@ exports.signin = (req,res) =>{
    if (!user) {
       res.json('User Not Found');
    } else {
-    bcrypt.compare(req.body.password, user.password, function (err, result) {
+    bcrypt.compare(req.body.password, user.password, async function (err, result) {
       if (result == true) {
           //create token
           
-        var token = jwt.sign({ id: user.guid }, process.env.SECRET);
+        var token = jwt.sign({ id: user.guid }, process.env.SECRET,{ expiresIn: '1d'  });
+        guid = uuidv4();
+        guid = guid.replace(/-/g,"");
+        user_token_data = {
+          id :guid,
+          token : token 
+        }
+        await UserToken.create(user_token_data).then(function (user_token) {
+          
+        }).catch(err => {
+          res.status(500).send({
+            message:
+              err.message || "Some error occurred while updating User Profile."
+          });
+        });;
         //create cookie
-        res.cookie("token",token,{expire : new Date() + 9999});
+        //res.cookie("token",token,{expire : new Date() + 9999});
         // send response
         const  {name,email,id} = user;
        
@@ -254,5 +270,24 @@ exports.updateUser = (req,res)=>{
     console.log(charge);
   }
 
-
+exports.logout = (req,res) =>{
+  const token =
+  req.body.token || req.query.token || req.headers["x-access-token"];
+  UserToken.destroy({
+    where: {
+       token: token
+    }
+ }).then(function(rowDeleted){
+   if(rowDeleted === 1){
+      res.status(200).send({
+        message:"Logout Successfully"
+      });
+    }
+ }, function(err){
+  res.status(500).send({
+    message:
+      err.message || "Some error occurred."
+  }); 
+ });
+}
   

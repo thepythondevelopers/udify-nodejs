@@ -74,24 +74,23 @@ exports.syncProduct =  (req,res) =>{
                         title : product_variant.title,
                         image_id : product_variant.image_id
                 }
-                ProductVariant.create(product_variant_data).then(integration => {
-                    return res.json(integration);
-                  }).catch((err)=>{
-                    return res.status(400).json({
-                        message : "Unable to sabe in db",
-                        error : err 
-                    })
-                  })   
+            
+            
+                  await   ProductVariant.findOrCreate(
+                    {
+                      where: { product_id: product_variant.product_id },
+                      defaults: product_variant_data
+                    });   
                 
-            }); 
-             Product.create(product_content).then(integration => {
-                return res.json(integration);
-              }).catch((err)=>{
-                return res.status(400).json({
-                    message : "Unable to sabe in db",
-                    error : err 
-                })
-              });
+            });
+            
+            await   Product.findOrCreate(
+                {
+                  where: { id: element.id },
+                  defaults: product_content
+                }); 
+            
+            
             return res.json("Product Synced Successfully");
       });
           } catch (error) {
