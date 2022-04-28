@@ -5,6 +5,7 @@ const Integration = db.integration;
 const Product = db.product;
 const ProductCustomData = db.productCustomData;
 const ProductVariant = db.productVariant;
+const Customer = db.customer;
 const ShopifyToken = require('shopify-token');
 //const { json } = require('body-parser');
 
@@ -126,6 +127,29 @@ exports.getSingleProduct = async (req,res) =>{
     include: [{
         model: ProductVariant
     }]
+  })
+  return res.json(result);
+}
+
+exports.getSingleCustomer = async (req,res) =>{
+  const id = req.params.customer_id;
+  result = await Customer.findOne({
+    where: {guid : id}
+  })
+  return res.json(result);
+}
+
+exports.getAllCustomer = async (req,res) =>{
+ 
+  result = await Customer.findAll({
+    where: {store_id : 0}
+  })
+  return res.json(result);
+}
+exports.getAllProduct = async (req,res) =>{
+  
+  result = await Product.findAll({
+    where: {store_id : 0}
   })
   return res.json(result);
 }

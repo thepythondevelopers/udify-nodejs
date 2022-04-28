@@ -4,11 +4,13 @@ const Integration = db.integration;
 const Product = db.product;
 const ProductCustomData = db.productCustomData;
 const ProductVariant = db.productVariant;
+const Customer = db.customer;
+
 const Op = db.Sequelize.Op;
 // const uuid = require("uuid/v1");
 const { v4: uuidv4 } = require('uuid');
 exports.syncProduct =  (req,res) =>{
-    page_info = req.body.page_info;
+    //page_info = req.body.page_info;
     const id = req.params.integration_id;
     Integration.findByPk(id)
       .then( async data => {
@@ -91,10 +93,13 @@ exports.syncProduct =  (req,res) =>{
                 }); 
             
             
-            return res.json("Product Synced Successfully");
+            
       });
+      return res.json("Product Synced Successfully");
           } catch (error) {
-            console.error(error);
+            res.status(500).send({
+              message: error
+            });
           }
           
         } else {
@@ -106,6 +111,79 @@ exports.syncProduct =  (req,res) =>{
       .catch(err => {
         res.status(500).send({
           message: "Error retrieving shopify account with id=" + err
+        });
+      });
+      
+      
+  }
+
+  exports.syncCustomer = (req,res) =>{
+    page_info = req.body.page_info;
+    const id = req.params.integration_id;
+    Integration.findByPk(id)
+      .then( async data => {
+        if (data) {
+          const shopify = new Shopify({
+            shopName: data.domain,
+            accessToken: data.access_token
+          });
+          
+
+          try {                
+            customer_data = await shopify.customer.list();
+            customer_data.forEach(async  element => {
+              guid = uuidv4();
+              guid = guid.replace(/-/g,"");
+              customer_content = {
+                guid : guid,
+                store_id : 0,
+                first_name : element.first_name,
+                last_name : element.last_name,
+                created_at : element.created_at,
+                updated_at : element.updated_at,
+                accepts_marketing : element.accepts_marketing,
+                email : element.email,
+                orders_count : element.orders_count,
+                total_spent : element.total_spent,
+                tax_exempt : element.tax_exempt,
+                shopify_id : element.id,
+                company : element.default_address.company,
+                address_line1 : element.default_address.address1,
+                address_line2  : element.default_address.address2,
+                city : element.default_address.city,
+                province : element.default_address.province,
+                country : element.default_address.country,
+                zip : element.default_address.zip,
+                phone : element.default_address.phone,
+                province_code : element.default_address.province_code,
+                country_code : element.default_address.country_code,
+                country_name : element.default_address.country_name,
+                default : element.default_address.default,
+                    
+              }
+
+              await   Customer.findOrCreate(
+                {
+                  where: { shopify_id: element.id },
+                  defaults: customer_content
+                }); 
+              
+            });
+            return res.json("Customer Synced Successfully");
+          }catch (error) {
+            res.status(500).send({
+              message: error
+            });
+          }
+        } else {
+          res.status(404).send({
+            message: `Cannot connect shopify with id=${id}.`
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error retrieving shopify account with id=" + id
         });
       });
       
