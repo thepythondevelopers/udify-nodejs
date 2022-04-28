@@ -154,6 +154,30 @@ exports.getAllProduct = async (req,res) =>{
   return res.json(result);
 }
 
+
+exports.getProductAccordingtoStore = async (req,res) =>{
+  store_id =req.body.store_id!=null ? req.body.store_id : [];
+  result = await Product.findAll({
+    where: {store_id : {
+      [Op.in]: store_id 
+    }},
+    include: [{
+        model: ProductVariant
+    }]
+  })
+  return res.json(result);
+}
+
+exports.getCustomerAccordingtoStore = async (req,res) =>{
+  store_id =req.body.store_id!=null ? req.body.store_id : [];
+  result = await Customer.findAll({
+    where: {store_id : {
+      [Op.in]: store_id 
+    }}
+  })
+  return res.json(result);
+}
+
 exports.getShopify = (req,res) =>{
   const shopifyToken1 = new ShopifyToken({
     sharedSecret: '8b512161192bcabeb8924111a66a394b',

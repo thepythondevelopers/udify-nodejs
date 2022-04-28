@@ -192,7 +192,7 @@ exports.updateUser = (req,res)=>{
   exports.change_password = (req,res)=>{
     User.findOne({
       where: {
-        password_reset_token: req.body.token
+        password_reset_token: req.body.password_reset_token
              }
     }).then(function (user) {
      if (!user) {

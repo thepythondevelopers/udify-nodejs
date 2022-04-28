@@ -21,13 +21,14 @@ exports.syncProduct =  (req,res) =>{
           });
           
           try {
+            const store_id = data.store_id;
           product_data = await shopify.product.list();
           product_data.forEach( async element => {                
             guid = uuidv4();
             guid_product = guid.replace(/-/g,"");
             product_content = {
                 guid: guid_product,
-                store_id : 0,
+                store_id : store_id,
                 body_html:element.body_html,
                 handle: "",
                 id  : element.id,
@@ -49,7 +50,7 @@ exports.syncProduct =  (req,res) =>{
                 guid_variation = guid.replace(/-/g,"");
                 product_variant_data = {
                         guid : guid_variation,
-                        store_id : 0,
+                        store_id : store_id,
                         product_id : product_variant.product_id,
                         barcode :product_variant.barcode,
                         compare_at_price : product_variant.compare_at_price,
@@ -77,22 +78,23 @@ exports.syncProduct =  (req,res) =>{
                         image_id : product_variant.image_id
                 }
             
-            
-                  await   ProductVariant.findOrCreate(
-                    {
-                      where: { product_id: product_variant.product_id },
-                      defaults: product_variant_data
-                    });   
+                const foundProductVariant = await ProductVariant.findOne({where : { product_id: product_variant.product_id }});
+                
+                if (!foundProductVariant) {
+                  await   ProductVariant.create(product_variant_data);   
+                 }else{
+                  await   ProductVariant.update(product_variant_data,{where: { product_id: product_variant.product_id }});   
+                 }
+                  
                 
             });
-            
-            await   Product.findOrCreate(
-                {
-                  where: { id: element.id },
-                  defaults: product_content
-                }); 
-            
-            
+                        
+                const foundProduct = await Product.findOne({where : { id: element.id }});
+                if (!foundProduct) {
+                     await   Product.create(product_content);   
+                 }else{
+                  await   Product.update(product_content,{where: { id: element.id  }});   
+                 }
             
       });
       return res.json("Product Synced Successfully");
@@ -130,13 +132,14 @@ exports.syncProduct =  (req,res) =>{
           
 
           try {                
+            const store_id = data.store_id;
             customer_data = await shopify.customer.list();
             customer_data.forEach(async  element => {
               guid = uuidv4();
               guid = guid.replace(/-/g,"");
               customer_content = {
                 guid : guid,
-                store_id : 0,
+                store_id : store_id,
                 first_name : element.first_name,
                 last_name : element.last_name,
                 created_at : element.created_at,
@@ -162,11 +165,13 @@ exports.syncProduct =  (req,res) =>{
                     
               }
 
-              await   Customer.findOrCreate(
-                {
-                  where: { shopify_id: element.id },
-                  defaults: customer_content
-                }); 
+                const foundCustomer = await Customer.findOne({where : { shopify_id: element.id }});
+                
+                if (!foundCustomer) {
+                  await   Customer.create(customer_content);   
+                 }else{
+                  await   Customer.update(customer_content,{where: { shopify_id: element.id }});   
+                 } 
               
             });
             return res.json("Customer Synced Successfully");

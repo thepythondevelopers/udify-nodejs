@@ -1,4 +1,4 @@
-const uuid = require("uuid/v1");
+const { v4: uuidv4 } = require('uuid');
 const db = require("../models");
 const Integration = db.integration;
 const Op = db.Sequelize.Op;
@@ -14,9 +14,13 @@ exports.createIntegration =  (req,res) =>{
           error : errors.array()
       })
   }
-  guid = uuid();
+  guid = uuidv4();
   guid = guid.replace(/-/g,""); 
   req.body.guid = guid;
+
+  store_id = uuidv4();
+  store_id = store_id.replace(/-/g,"");
+  req.body.store_id = store_id;
     //return res.json(req.body.store_api_key);
       Integration
       .create(req.body)
@@ -57,6 +61,7 @@ exports.findIntegration = (req,res) =>{
   }
   
   exports.findAllIntegration = (req, res) => {
+    account_id = req.body.account_id;
     Integration.findAll({ where: {
     deleted_at: {
       [Op.is]: null, 
@@ -84,8 +89,7 @@ exports.updateIntegration = (req,res)=>{
   content =  { store_api_key: req.body.store_api_key, 
     store_api_secret: req.body.store_api_secret,
     domain: req.body.domain,
-    access_token: req.body.access_token,
-    store_id: req.body.store_id       
+    access_token: req.body.access_token
   }
   
 
@@ -110,9 +114,10 @@ exports.updateIntegration = (req,res)=>{
 
 exports.deleteIntegration = (req,res)=>{
   const id = req.params.id;
+  const account_id = req.body.account_id;
   Integration.update(
     {deleted_at : Date.now()},
-    { where: { guid: id } }
+    { where: { guid: id ,account_id :account_id} }
   )
   .then(data => {
     res.send(data);
@@ -120,7 +125,7 @@ exports.deleteIntegration = (req,res)=>{
   .catch(err => {
     res.status(500).send({
       message:
-        err.message || "Some error occurred while updating Integration."
+        err.message || "Some error occurred while deleting Integration."
     });
   });   
 }
