@@ -290,4 +290,7 @@ exports.logout = (req,res) =>{
   }); 
  });
 }
-  
+
+exports.test = (req,res) =>{
+  return res.json('Working');
+}  

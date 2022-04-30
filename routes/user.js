@@ -4,7 +4,7 @@ const { check} = require("express-validator");
 const db = require("../models");
 const User = db.user;
 
-const {updateUser,signup,signin,forget_password,change_password,get_profile,logout} = require("../controllers/user");
+const {updateUser,signup,signin,forget_password,change_password,get_profile,logout,test} = require("../controllers/user");
 const {verifyToken,isAccountCheck,roleCheck} = require("../controllers/auth");
 
 
@@ -70,5 +70,5 @@ router.post("/change-password",[
 router.get("/get-profile",verifyToken,get_profile);
 
 router.get("/logout",verifyToken,logout);
-
+router.get("/test",test);
 module.exports = router;
