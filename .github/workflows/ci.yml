@@ -1,0 +1,42 @@
+name: CI
+on: 
+  push:
+    branches:
+      - "main"
+
+jobs:
+  Git_Pull:
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: /var/www/udify_project/udify-nodejs
+    steps:
+      - name: Run Git stash
+        run: git stash
+      - name: Taking Git Pull
+        run: git pull
+      - name: Get Back the .env file
+        run: git stash pop
+
+  Creating_docker_Image:
+    needs: Git_Pull
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: /var/www/udify_project/udify-nodejs
+    steps:
+      - name: Creating_docker_Image
+        run: sudo docker build -t udifyapi .
+
+  Deploy_Image:
+    needs: Creating_docker_Image
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: /var/www/udify_project/
+    steps:
+      - name: Deploy the Deploy_Image
+        run: sudo docker-compose up -d
+
+
+
