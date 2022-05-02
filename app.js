@@ -49,6 +49,7 @@ app.use('/api',syncShopifyRoutes);
 const db = require("./models");
 
 
+
 //db.sequelize.sync();
 
 // db.sequelize.sync().then(() => {

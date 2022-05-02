@@ -153,8 +153,8 @@ exports.updateUser = (req,res)=>{
     )
     .then(async data => {
       
-      url = process.env.BASE_URL+'api/confirm-password/'+token
-
+      //url = process.env.BASE_URL+'api/confirm-password/'
+      url = 'http://udify.pamsar.com/reset-password/'+token
       try {
         await sendGridMail.send(forgetpassword_email(req.body.email,url));
         console.log('Test email sent successfully');
@@ -190,9 +190,10 @@ exports.updateUser = (req,res)=>{
   } 
 
   exports.change_password = (req,res)=>{
+    const password_reset_token = req.params.password_reset_token;
     User.findOne({
       where: {
-        password_reset_token: req.body.password_reset_token
+        password_reset_token: password_reset_token
              }
     }).then(function (user) {
      if (!user) {
@@ -205,7 +206,7 @@ exports.updateUser = (req,res)=>{
       
       User.update(
         content,
-        { where: { password_reset_token: req.body.token }
+        { where: { password_reset_token: password_reset_token }
        }
       )
       .then(data => {

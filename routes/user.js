@@ -62,7 +62,7 @@ router.post("/forget-password",[
   check("email").isLength({max : 255}).isEmail().notEmpty()
 ],forget_password);
 
-router.post("/change-password",[
+router.post("/change-password/:password_reset_token",[
   check("token").notEmpty(),
   check("password").isLength({max : 255}).notEmpty(),
 ],change_password);
