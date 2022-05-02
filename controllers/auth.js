@@ -16,11 +16,10 @@ const UserToken = db.userToken;
 //   console.log('Hello');
 // })
 exports.verifyToken = async (req, res, next) => {
-  const token =
-    req.body.token || req.query.token || req.headers["x-access-token"];
+  const token = req.headers["x-access-token"];
 
   if (!token) {
-    return res.status(403).send("A token is required for authentication");
+    return res.status(403).send({error:"A token is required for authentication"});
   }
   try {
     const decoded = jwt.verify(token, process.env.SECRET);
@@ -32,7 +31,7 @@ exports.verifyToken = async (req, res, next) => {
    });
    if (user_token === null) {
     return res.status(401).send({
-      message : "Token Not Found"
+      error : "Token Not Found"
     });
   }
   req.user = decoded;
@@ -40,8 +39,8 @@ exports.verifyToken = async (req, res, next) => {
     
   } catch (err_m) {
     return res.status(401).send({
-      message : "Invalid Token",
-      error :err_m
+      error : "Invalid Token",
+      error_m :err_m
     });
   }
   return next();
@@ -56,7 +55,7 @@ exports.isAccountCheck = async(req,res,next)=>{
   const acc = await Account.findOne({ where: { public_id: req.user.id } });
 if (acc === null) {
   return res.status(404).json({
-    err  : "Account Not Found"
+    error  : "Account Not Found"
 })
 } else {
   req.body.account_id = acc.guid;

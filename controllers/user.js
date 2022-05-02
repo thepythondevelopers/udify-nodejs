@@ -17,7 +17,7 @@ exports.signup = (req,res)=>{
   
   const errors = validationResult(req);
   if(!errors.isEmpty()){
-      return res.status(402).json({
+      return res.status(400).json({
           error : errors.array()
       })
   }
@@ -51,7 +51,7 @@ exports.signin = (req,res) =>{
            }
   }).then(function (user) {
    if (!user) {
-      res.json('User Not Found');
+      res.json({error:'User Not Found'});
    } else {
     bcrypt.compare(req.body.password, user.password, async function (err, result) {
       if (result == true) {
@@ -79,7 +79,7 @@ exports.signin = (req,res) =>{
        
         res.json({token,user:{name,email,id}});
       } else {
-        res.json("Incorrect Password");
+        res.json({error:"Incorrect Password"});
       }
     });
   }
@@ -93,7 +93,7 @@ exports.signin = (req,res) =>{
 exports.updateUser = (req,res)=>{
     const errors = validationResult(req);
     if(!errors.isEmpty()){
-        return res.status(402).json({
+        return res.status(400).json({
             error : errors.array()
         })
     }
@@ -114,7 +114,7 @@ exports.updateUser = (req,res)=>{
      }
     )
     .then(data => {
-      res.send('Successfully Updated');
+      res.send({message:'Successfully Updated'});
     })
     .catch(err => {
       res.status(500).send({
@@ -127,7 +127,7 @@ exports.updateUser = (req,res)=>{
   exports.forget_password =  (req,res)=>{
     const errors = validationResult(req);
     if(!errors.isEmpty()){
-        return res.status(402).json({
+        return res.status(400).json({
             error : errors.array()
         })
     }
@@ -143,7 +143,7 @@ exports.updateUser = (req,res)=>{
              }
     }).then(function (user) {
      if (!user) {
-        res.json('User Not Found');
+        res.json({error:'User Not Found'});
      } else {
 
     User.update(
@@ -197,7 +197,7 @@ exports.updateUser = (req,res)=>{
              }
     }).then(function (user) {
      if (!user) {
-        res.json('Token Expire or Incorrect');
+        res.json({error:'Token Expire or Incorrect'});
      } else { 
       content =  { 
         password: req.body.password,
@@ -211,7 +211,7 @@ exports.updateUser = (req,res)=>{
       )
       .then(data => {
         
-        res.send('Password Changed Successfully.');
+        res.send({message:'Password Changed Successfully.'});
       })
       .catch(err => {
         res.status(500).send({
@@ -238,7 +238,7 @@ exports.updateUser = (req,res)=>{
              }
     }).then(function (user) {
      if (!user) {
-        res.json('User Not Found.');
+        res.json({error:'User Not Found.'});
      } else {
       res.json(user);
      }
