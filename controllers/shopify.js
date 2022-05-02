@@ -128,7 +128,7 @@ exports.getSingleProduct = async (req,res) =>{
         model: ProductVariant
     }]
   })
-  return res.json(result);
+  return res.json({data:result});
 }
 
 exports.getSingleCustomer = async (req,res) =>{
@@ -136,7 +136,7 @@ exports.getSingleCustomer = async (req,res) =>{
   result = await Customer.findOne({
     where: {guid : id}
   })
-  return res.json(result);
+  return res.json({data:result});
 }
 
 exports.getAllCustomer = async (req,res) =>{
@@ -144,14 +144,14 @@ exports.getAllCustomer = async (req,res) =>{
   result = await Customer.findAll({
     where: {store_id : 0}
   })
-  return res.json(result);
+  return res.json({data:result});
 }
 exports.getAllProduct = async (req,res) =>{
   
   result = await Product.findAll({
     where: {store_id : 0}
   })
-  return res.json(result);
+  return res.json({data:result});
 }
 
 
@@ -165,7 +165,7 @@ exports.getProductAccordingtoStore = async (req,res) =>{
         model: ProductVariant
     }]
   })
-  return res.json(result);
+  return res.json({data:result});
 }
 
 exports.getCustomerAccordingtoStore = async (req,res) =>{
@@ -175,7 +175,7 @@ exports.getCustomerAccordingtoStore = async (req,res) =>{
       [Op.in]: store_id 
     }}
   })
-  return res.json(result);
+  return res.json({data:result});
 }
 
 exports.getShopify = (req,res) =>{
