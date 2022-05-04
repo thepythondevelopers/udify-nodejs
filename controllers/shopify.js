@@ -7,6 +7,7 @@ const ProductCustomData = db.productCustomData;
 const ProductVariant = db.productVariant;
 const Customer = db.customer;
 const ShopifyToken = require('shopify-token');
+var pluck = require('arr-pluck');
 //const { json } = require('body-parser');
 
 const Op = db.Sequelize.Op;
@@ -156,11 +157,29 @@ exports.getAllProduct = async (req,res) =>{
 
 
 exports.getProductAccordingtoStore = async (req,res) =>{
+  
   store_id =req.body.store_id!=null ? req.body.store_id : [];
+  if(store_id==0){
+    store_id = await Integration.findAll({
+      attributes: ['store_id'],
+      deleted_at: {
+        [Op.is]: null, 
+      },
+      where: {account_id :req.body.account_id},
+    })
+    store_id = pluck(store_id, 'store_id');
+  }
+//   const startedDate = "2022-04-24 01:01:01";
+// const endDate = "2022-04-28 23:23:59";
   result = await Product.findAll({
     where: {store_id : {
-      [Op.in]: store_id 
-    }},
+      [Op.in]: store_id,     
+    },
+  //   created_at: {
+  //     [Op.between]: [startedDate, endDate]
+  // }
+  
+  },
     include: [{
         model: ProductVariant
     }]
@@ -170,6 +189,16 @@ exports.getProductAccordingtoStore = async (req,res) =>{
 
 exports.getCustomerAccordingtoStore = async (req,res) =>{
   store_id =req.body.store_id!=null ? req.body.store_id : [];
+  if(store_id==0){
+    store_id = await Integration.findAll({
+      attributes: ['store_id'],
+      deleted_at: {
+        [Op.is]: null, 
+      },
+      where: {account_id :req.body.account_id},
+    })
+    store_id = pluck(store_id, 'store_id');
+  }
   result = await Customer.findAll({
     where: {store_id : {
       [Op.in]: store_id 

@@ -14,6 +14,6 @@ router.get("/get-single-customer/:customer_id",verifyToken,getSingleCustomer);
 //router.get("/get-all-customer",verifyToken,getAllCustomer);
 //router.get("/get-all-product",verifyToken,getAllProduct);
 
-router.get("/get-all-product-store",verifyToken,getProductAccordingtoStore);
+router.get("/get-all-product-store",verifyToken,isAccountCheck,getProductAccordingtoStore);
 router.get("/get-all-customer-store",verifyToken,getCustomerAccordingtoStore);
 module.exports = router;
