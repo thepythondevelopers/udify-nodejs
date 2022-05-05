@@ -25,6 +25,7 @@ db.integration = require("./integration.js")(sequelize, Sequelize);
 db.user = require("./user.js")(sequelize, Sequelize);
 
 db.product.hasMany(db.productVariant,{ foreignKey: 'product_id', sourceKey: 'id'});
+db.user.hasOne(db.account,{ foreignKey: 'public_id', sourceKey: 'guid'});
 //db.account.hasMany(db.setting);
 //db.setting.belongsTo(db.account);
 // db.integration.belongsTo(db.account);

@@ -171,10 +171,17 @@ exports.getProductAccordingtoStore = async (req,res) =>{
   }
 //   const startedDate = "2022-04-24 01:01:01";
 // const endDate = "2022-04-28 23:23:59";
+const search_string = req.body.search_string!=null ? req.body.search_string : "";
+ 
   result = await Product.findAll({
     where: {store_id : {
-      [Op.in]: store_id,     
-    },
+      [Op.in]: store_id  
+    },  [Op.or]: [
+      { store_id: { [Op.like]: `%${search_string}%` } },
+      { product_type: { [Op.like]: `%${search_string}%` } },
+      { product_type: { [Op.like]: `%${search_string}%` } }
+    ],
+    
   //   created_at: {
   //     [Op.between]: [startedDate, endDate]
   // }
@@ -199,10 +206,15 @@ exports.getCustomerAccordingtoStore = async (req,res) =>{
     })
     store_id = pluck(store_id, 'store_id');
   }
+  const search_string = req.body.search_string!=null ? req.body.search_string : "";
   result = await Customer.findAll({
     where: {store_id : {
       [Op.in]: store_id 
-    }}
+    },[Op.or]: [
+      { store_id: { [Op.like]: `%${search_string}%` } },
+      { product_type: { [Op.like]: `%${search_string}%` } },
+      { product_type: { [Op.like]: `%${search_string}%` } }
+    ]}
   })
   return res.json({data:result});
 }

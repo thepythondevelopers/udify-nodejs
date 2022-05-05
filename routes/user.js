@@ -4,7 +4,7 @@ const { check} = require("express-validator");
 const db = require("../models");
 const User = db.user;
 
-const {updateUser,signup,signin,forget_password,change_password,get_profile,logout,test} = require("../controllers/user");
+const {updateUser,signup,signin,forget_password,change_password,get_profile,logout} = require("../controllers/user");
 const {verifyToken,isAccountCheck,roleCheck} = require("../controllers/auth");
 
 
@@ -40,8 +40,7 @@ router.post("/user-sign-up",[
       return new Promise((resolve, reject) => {
           User.findOne({ where: { email: userEmail } })
           .then(emailExist => {
-              if(emailExist !== null){
-                console.log(emailExist);
+              if(emailExist !== null){                
                   reject(new Error('Email already exists.'))
               }else{
                   resolve(true)
@@ -50,7 +49,6 @@ router.post("/user-sign-up",[
           
       })
       }).notEmpty(),
-    check("account_id").isLength({max : 32}).notEmpty(),
     check("notification_email_list").isLength({max : 1024}).notEmpty(),
 ],signup);
 router.post("/user-sign-in",[
@@ -70,5 +68,5 @@ router.post("/change-password/:password_reset_token",[
 router.get("/get-profile",verifyToken,get_profile);
 
 router.get("/logout",verifyToken,logout);
-router.get("/test",test);
+
 module.exports = router;

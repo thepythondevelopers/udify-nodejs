@@ -1,29 +1,9 @@
-const uuid = require("uuid/v1");
 const db = require("../models");
 const Account = db.account;
 const Op = db.Sequelize.Op;
 const {validationResult} = require("express-validator");
 
 
-exports.createAccount = (req,res) =>{
-  
-  guid = uuid();
-  guid = guid.replace(/-/g,"");
-  
-  req.body.guid = guid;
-  req.body.public_id = req.user.id
-  
-  Account
-      .create(req.body)
-      .then(account => {
-        return res.json(account);
-      }).catch((err)=>{
-        return res.status(400).json({
-            message : "Unable to sabe in db",
-            error : err 
-        })
-      })   
-}
 
 exports.findAccount = (req,res) =>{
   const id = req.params.id;

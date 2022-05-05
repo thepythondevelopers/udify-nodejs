@@ -1,6 +1,7 @@
-const uuid = require("uuid/v1");
+
 const db = require("../models");
 const User = db.user;
+const Account = db.account;
 const UserToken = db.userToken;
 const Op = db.Sequelize.Op;
 const {validationResult} = require("express-validator");
@@ -11,9 +12,10 @@ require('dotenv').config();
 const sendGridMail = require('@sendgrid/mail');
 sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
 const stripe = require('stripe')(process.env.STRIPE_KEY);
+const moment= require('moment') 
 // var expressJwt = require('express-jwt');
 
-exports.signup = (req,res)=>{
+exports.signup =  (req,res)=>{
   
   const errors = validationResult(req);
   if(!errors.isEmpty()){
@@ -23,13 +25,38 @@ exports.signup = (req,res)=>{
   }
 
   
-  guid = uuid();
+  guid = uuidv4();
   guid = guid.replace(/-/g,""); 
   req.body.guid = guid;
 
-  User
-  .create(req.body)
-  .then(user => {
+  account_id  = uuidv4();
+  account_id  = account_id.replace(/-/g,""); 
+  req.body.account_id  = account_id ;
+
+  api_token  = uuidv4();
+  api_token  = api_token.replace(/-/g,""); 
+  
+
+
+  
+  User.create(req.body)
+  .then(async user => {
+    
+    const stripe_customer = await stripe.customers.create({
+      email: req.body.email,
+    });
+  
+    
+    
+    account_data = {
+      guid : req.body.account_id,
+      name : req.body.first_name,
+      api_token : user.guid,
+      public_id : api_token,
+      stripe_customer_id : stripe_customer.id
+    }
+    await Account.create(account_data); 
+
     res.json({
       first_name : user.first_name,
       email : user.email,
@@ -71,13 +98,18 @@ exports.signin = (req,res) =>{
             message:
               err.message || "Some error occurred while updating User Profile."
           });
-        });;
-        //create cookie
-        //res.cookie("token",token,{expire : new Date() + 9999});
-        // send response
-        const  {name,email,id} = user;
-       
-        res.json({token,user:{name,email,id}});
+        });
+        
+        
+        await UserToken.destroy({
+          where: {
+            created_at: {
+              [Op.lte]: moment().subtract(2, 'days').toDate()
+            }
+          }
+        })
+        email = user.email;
+        res.json({token,user:{email}});
       } else {
         res.json({error:"Incorrect Password"});
       }
@@ -164,14 +196,8 @@ exports.updateUser = (req,res)=>{
           message:
             error.message || "Some error occurred while generating reset password."
         });
-        // if (error.response) {
-        //   console.error(error.response.body)
-        // }
+        
       }
-
-
-
-
       
     })
     .catch(err => {
@@ -233,9 +259,10 @@ exports.updateUser = (req,res)=>{
   exports.get_profile = (req,res)=>{
 
     User.findOne({
-      where: {
-        guid: req.user.id
-             }
+      where: {guid: req.user.id},
+      include: [{
+              model: Account
+      }]       
     }).then(function (user) {
      if (!user) {
         res.json({error:'User Not Found.'});
@@ -261,15 +288,6 @@ exports.updateUser = (req,res)=>{
     };
   }
   
-  exports.stripe = async (req,res)=>{
-      const charge = await stripe.charges.create({
-      amount: 2000,
-      currency: 'usd',
-      source: 'tok_mastercard',
-      description: 'My First Test Charge (created for API docs)',
-    });
-    console.log(charge);
-  }
 
 exports.logout = (req,res) =>{
   const token =
@@ -292,6 +310,3 @@ exports.logout = (req,res) =>{
  });
 }
 
-exports.test = (req,res) =>{
-  return res.json('Working');
-}  
