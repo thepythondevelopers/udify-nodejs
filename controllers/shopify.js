@@ -38,6 +38,7 @@ exports.getSingleCustomer = async (req,res) =>{
 exports.getProductAccordingtoStore = async (req,res) =>{
   try {  
   store_id =req.body.store_id!=null ? req.body.store_id : [];
+  return res.json(store_id); 
   if(store_id==0){
     store_id = await Integration.findAll({
       attributes: ['store_id'],
@@ -51,7 +52,7 @@ exports.getProductAccordingtoStore = async (req,res) =>{
    
 
 
-  return res.json(store_id); 
+  
    
 const search_string = req.body.search_string!=null ? req.body.search_string : "";
 if(req.body.startedDate!=null && req.body.endDate!=null ){
