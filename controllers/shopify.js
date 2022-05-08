@@ -51,7 +51,7 @@ exports.getProductAccordingtoStore = async (req,res) =>{
    
 
 
-   
+  return res.json(store_id); 
    
 const search_string = req.body.search_string!=null ? req.body.search_string : "";
 if(req.body.startedDate!=null && req.body.endDate!=null ){
