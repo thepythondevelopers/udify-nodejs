@@ -81,6 +81,9 @@ module.exports = (sequelize, Sequelize) => {
     default:{
         type: Sequelize.BOOLEAN()
     },
+    state:{
+      type: Sequelize.STRING()
+  },
     sys_updated_at:{
         allowNull: false,
         type: Sequelize.DATE,

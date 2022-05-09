@@ -61,6 +61,9 @@ module.exports = (sequelize, Sequelize) => {
     vendor:{
         type: Sequelize.STRING(),
     },
+    status:{
+        type: Sequelize.STRING(),
+    },
     sys_updated_at:{
         type: Sequelize.DATE,
     }

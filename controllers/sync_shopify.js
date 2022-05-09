@@ -43,6 +43,7 @@ exports.syncProduct =  (req,res) =>{
                 metafields_global_title_tag:"",
                 metafields_global_description_tag:"",
                 vendor:element.vendor,  
+                status:element.status
             };
             variants = element.variants;
             variants.forEach(async product_variant => {
@@ -97,7 +98,8 @@ exports.syncProduct =  (req,res) =>{
                  }
             
       });
-      return res.json("Product Synced Successfully");
+      return res.json(
+        {message:"Product Synced Successfully"});
           } catch (error) {
             res.status(500).send({
               message: error
@@ -134,6 +136,7 @@ exports.syncProduct =  (req,res) =>{
           try {                
             const store_id = data.store_id;
             customer_data = await shopify.customer.list();
+            
             customer_data.forEach(async  element => {
               guid = uuidv4();
               guid = guid.replace(/-/g,"");
@@ -162,7 +165,7 @@ exports.syncProduct =  (req,res) =>{
                 country_code : element.default_address.country_code,
                 country_name : element.default_address.country_name,
                 default : element.default_address.default,
-                    
+                state :  element.state       
               }
 
                 const foundCustomer = await Customer.findOne({where : { shopify_id: element.id }});
@@ -174,7 +177,9 @@ exports.syncProduct =  (req,res) =>{
                  } 
               
             });
-            return res.json("Customer Synced Successfully");
+            return res.json(
+              {message:"Customer Synced Successfully"});
+            
           }catch (error) {
             res.status(500).send({
               message: error

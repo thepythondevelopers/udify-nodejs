@@ -8,7 +8,8 @@ const ProductVariant = db.productVariant;
 const Customer = db.customer;
 const ShopifyToken = require('shopify-token');
 var pluck = require('arr-pluck');
-const moment= require('moment') 
+const moment= require('moment');
+const {validationResult} = require("express-validator");
 //const { json } = require('body-parser');
 
 const Op = db.Sequelize.Op;
@@ -158,4 +159,141 @@ catch (err) {
     error :err
   });
 }
+}
+
+exports.createCustomerShopify = async (req,res) =>{
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+      return res.status(400).json({
+          error : errors.array()
+      })
+  }
+  try {
+    const id = req.params.integration_id;
+    Integration.findByPk(id)
+      .then( async data => {
+        if (data) {
+          const shopify = new Shopify({
+            shopName: data.domain,
+            accessToken: data.access_token
+          });
+          customer_data = {
+            "first_name": req.body.first_name,
+            "last_name": req.body.last_name,
+            "email": req.body.email,
+            "phone": req.body.phone,
+            "verified_email": true,
+            "addresses": [
+              {
+                "address1": req.body.address1,
+                "city": req.body.city,
+                "province": req.body.province,
+                "zip": req.body.zip,
+                "country": req.body.country
+              }
+            ],
+            "send_email_invite": false
+          }
+          
+          
+          customer =  await shopify.customer.create(customer_data);
+           return res.json({message : "Customer Created Successfully."});
+        }
+      }).catch(err => {
+        res.status(500).send({
+          message: "Error retrieving shopify account with id=" + id,
+          err_m : err
+        });
+      }); 
+  }
+  catch (err) {
+    return res.status(401).send({
+      message : "Something Went Wrong",
+      error :err
+    });
+  }
+}
+
+exports.deleteCustomerShopify = async (req,res) =>{
+  
+  try {
+    const id = req.params.integration_id;
+    Integration.findByPk(id)
+      .then( async data => {
+        if (data) {
+          const shopify = new Shopify({
+            shopName: data.domain,
+            accessToken: data.access_token
+          });
+          customer =  await shopify.customer.delete(req.params.customer_id);
+          return res.json({message : "Customer Deleted Successfully."});
+        }
+      }).catch(err => {
+        res.status(500).send({
+         
+          err_m : err
+        });
+      });  
+  }
+  catch (err) {
+    return res.status(401).send({
+      message : "Something Went Wrong",
+      error :err
+    });
+  }
+}
+
+exports.updateCustomerShopify = async (req,res) =>{
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+      return res.status(400).json({
+          error : errors.array()
+      })
+  }
+  
+  try {
+    const id = req.params.integration_id;
+    Integration.findByPk(id)
+      .then( async data => {
+        if (data) {
+          const shopify = new Shopify({
+            shopName: data.domain,
+            accessToken: data.access_token
+          });
+          
+          customer_data = {
+            "first_name": req.body.first_name,
+            "last_name": req.body.last_name,
+            "email": req.body.email,
+            "phone": req.body.phone,
+            "verified_email": true,
+            "addresses": [
+              {
+                "address1": req.body.address1,
+                "city": req.body.city,
+                "province": req.body.province,
+                "zip": req.body.zip,
+                "country": req.body.country
+              }
+            ],
+            "send_email_invite": false
+          }
+          
+          
+          customer =  await shopify.customer.update(req.params.customer_id, customer_data);
+           return res.json({message : "Customer Updated Successfully."});
+        }
+      }).catch(err => {
+        res.status(500).send({
+          message: "Error retrieving shopify account with id=" + id,
+          err_m : err
+        });
+      }); 
+  }
+  catch (err) {
+    return res.status(401).send({
+      message : "Something Went Wrong",
+      error :err
+    });
+  }
 }
