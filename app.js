@@ -17,8 +17,46 @@ const plaidRoutes = require("./routes/plaid");
 const userRoutes = require("./routes/user");
 
 const path = require("path");
+var multer = require('multer');
+var fs = require('fs');
+const storage = multer.diskStorage({
+  destination: function(req,file,cb){
+    cb(null,"./uploads/")
+  },
+  filename : function(req,file,cb){
+    cb(null,Date.now()+file.originalname)
+  }
+})
+
+const fileFilter = (req,file,cb)=>{
+  if(file.mimetype==='image/jpeg' || file.mimetype==='image/png' || file.mimetype==='image/jpg'){
+    cb(null,true)
+  }else{
+    cb(null,false)
+  }
+}
+var upload = multer({
+  storage:storage,
+  fileFilter:fileFilter
+})
+// app.use(express.static('uploads')); 
+// app.use('/images', express.static('uploads'));
 
 
+// fs.unlink('./uploads/1652172809118account.png', function (err) {
+// 	if (err) throw err;
+// 	// if no error, file has been deleted successfully
+// 	console.log('File deleted!');
+// });
+
+
+app.post('/api/upload',upload.single('image'),async (req,res)=>{
+  
+  if(req.file){
+    const pathName =req.file.path;
+   return res.json(req.file,pathName);
+  }
+});
 //Redis Implementation
 const client = redis.createClient({ url: 'rediss://default:AVNS_H1ldRswWtOxMWL-@udify-redis-do-user-4912141-0.b.db.ondigitalocean.com:25061'});
 

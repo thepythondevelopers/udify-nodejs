@@ -7,7 +7,6 @@ const ProductVariant = db.productVariant;
 const Customer = db.customer;
 
 const Op = db.Sequelize.Op;
-// const uuid = require("uuid/v1");
 const { v4: uuidv4 } = require('uuid');
 exports.syncProduct =  (req,res) =>{
     //page_info = req.body.page_info;
