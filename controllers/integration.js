@@ -62,7 +62,9 @@ exports.findIntegration = (req,res) =>{
   
   exports.findAllIntegration = (req, res) => {
     account_id = req.body.account_id;
-    Integration.findAll({ where: {
+    Integration.findAll({ 
+      attributes: {exclude: ['access_token','store_api_key','store_api_secret']},
+      where: {
     deleted_at: {
       [Op.is]: null, 
     }}

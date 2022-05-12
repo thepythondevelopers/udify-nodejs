@@ -21,6 +21,15 @@ exports.syncProduct =  (req,res) =>{
           
           try {
             const store_id = data.store_id;
+
+            await Product.destroy({
+              where: {store_id : store_id}
+            })
+            await ProductVariant.destroy({
+              where: {store_id : store_id}
+            })  
+            
+
           product_data = await shopify.product.list();
           product_data.forEach( async element => {                
             guid = uuidv4();
@@ -77,24 +86,10 @@ exports.syncProduct =  (req,res) =>{
                         title : product_variant.title,
                         image_id : product_variant.image_id
                 }
-            
-                const foundProductVariant = await ProductVariant.findOne({where : { product_id: product_variant.product_id }});
-                
-                if (!foundProductVariant) {
-                  await   ProductVariant.create(product_variant_data);   
-                 }else{
-                  await   ProductVariant.update(product_variant_data,{where: { product_id: product_variant.product_id }});   
-                 }
-                  
-                
+                await   ProductVariant.create(product_variant_data);
+
             });
-                        
-                const foundProduct = await Product.findOne({where : { id: element.id }});
-                if (!foundProduct) {
-                     await   Product.create(product_content);   
-                 }else{
-                  await   Product.update(product_content,{where: { id: element.id  }});   
-                 }
+            await   Product.create(product_content);                        
             
       });
       return res.json(
@@ -134,13 +129,18 @@ exports.syncProduct =  (req,res) =>{
 
           try {                
             const store_id = data.store_id;
+            Customer.destroy({
+              where: {
+                  store_id : store_id
+              }
+          })
             customer_data = await shopify.customer.list();
-            
-            customer_data.forEach(async  element => {
+   
+            await Promise.all(customer_data.map(async (element) => {
               guid = uuidv4();
               guid = guid.replace(/-/g,"");
               customer_content = {
-                guid : guid,
+                guid:guid,
                 store_id : store_id,
                 first_name : element.first_name,
                 last_name : element.last_name,
@@ -166,16 +166,13 @@ exports.syncProduct =  (req,res) =>{
                 default : element.default_address.default,
                 state :  element.state       
               }
+              Customer.create(customer_content);              
+            
+            }));  
 
-                const foundCustomer = await Customer.findOne({where : { shopify_id: element.id }});
-                
-                if (!foundCustomer) {
-                  await   Customer.create(customer_content);   
-                 }else{
-                  await   Customer.update(customer_content,{where: { shopify_id: element.id }});   
-                 } 
-              
-            });
+
+
+            
             return res.json(
               {message:"Customer Synced Successfully"});
             

@@ -259,6 +259,7 @@ exports.updateUser = (req,res)=>{
   exports.get_profile = (req,res)=>{
 
     User.findOne({
+      attributes: {exclude: ['password']},
       where: {guid: req.user.id},
       include: [{
               model: Account

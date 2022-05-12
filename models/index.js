@@ -14,6 +14,7 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
+db.order = require("./order.js")(sequelize, Sequelize);
 db.customer = require("./customer.js")(sequelize, Sequelize);
 db.userToken = require("./userToken.js")(sequelize, Sequelize);
 db.product = require("./products.js")(sequelize, Sequelize);

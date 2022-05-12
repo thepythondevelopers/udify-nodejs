@@ -68,9 +68,10 @@ if(req.body.startedDate!=null && req.body.endDate!=null ){
     where: {store_id : {
       [Op.in]: store_id  
     },  [Op.or]: [
-      { store_id: { [Op.like]: `%${search_string}%` } },
+      { id: { [Op.like]: `%${search_string}%` } },
       { product_type: { [Op.like]: `%${search_string}%` } },
-      { product_type: { [Op.like]: `%${search_string}%` } },
+      { body_html: { [Op.like]: `%${search_string}%` } },
+      { status: { [Op.like]: `%${search_string}%` } },
       
     ],
     
@@ -88,10 +89,10 @@ if(req.body.startedDate!=null && req.body.endDate!=null ){
     where: {store_id : {
       [Op.in]: store_id  
     },  [Op.or]: [
-      { store_id: { [Op.like]: `%${search_string}%` } },
+      { id: { [Op.like]: `%${search_string}%` } },
       { product_type: { [Op.like]: `%${search_string}%` } },
-      { product_type: { [Op.like]: `%${search_string}%` } },
-      
+      { body_html: { [Op.like]: `%${search_string}%` } },
+      { status: { [Op.like]: `%${search_string}%` } },
     ],
     
   },
@@ -134,7 +135,17 @@ exports.getCustomerAccordingtoStore = async (req,res) =>{
       },[Op.or]: [
         { store_id: { [Op.like]: `%${search_string}%` } },
         { first_name: { [Op.like]: `%${search_string}%` } },
-        { last_name: { [Op.like]: `%${search_string}%` } }
+        { last_name: { [Op.like]: `%${search_string}%` } },
+        { shopify_id: { [Op.like]: `%${search_string}%` } },
+        { email: { [Op.like]: `%${search_string}%` } },
+        { address_line1: { [Op.like]: `%${search_string}%` } },
+        { address_line2: { [Op.like]: `%${search_string}%` } },
+        { city: { [Op.like]: `%${search_string}%` } },
+        { province: { [Op.like]: `%${search_string}%` } },
+        { country: { [Op.like]: `%${search_string}%` } },
+        { zip: { [Op.like]: `%${search_string}%` } },
+        { phone: { [Op.like]: `%${search_string}%` } },       
+
       ],
       created_at: {
         [Op.between]: [startedDate, endDate]
@@ -148,7 +159,16 @@ exports.getCustomerAccordingtoStore = async (req,res) =>{
       },[Op.or]: [
         { store_id: { [Op.like]: `%${search_string}%` } },
         { first_name: { [Op.like]: `%${search_string}%` } },
-        { last_name: { [Op.like]: `%${search_string}%` } }
+        { last_name: { [Op.like]: `%${search_string}%` } },
+        { shopify_id: { [Op.like]: `%${search_string}%` } },
+        { email: { [Op.like]: `%${search_string}%` } },
+        { address_line1: { [Op.like]: `%${search_string}%` } },
+        { address_line2: { [Op.like]: `%${search_string}%` } },
+        { city: { [Op.like]: `%${search_string}%` } },
+        { province: { [Op.like]: `%${search_string}%` } },
+        { country: { [Op.like]: `%${search_string}%` } },
+        { zip: { [Op.like]: `%${search_string}%` } },
+        { phone: { [Op.like]: `%${search_string}%` } },
       ]}
     })
   }  
@@ -191,14 +211,16 @@ exports.createCustomerShopify = async (req,res) =>{
                 "city": req.body.city,
                 "province": req.body.province,
                 "zip": req.body.zip,
+           
                 "country": req.body.country
               }
             ],
-            "send_email_invite": false
+            "send_email_invite": true
           }
           
           
           customer =  await shopify.customer.create(customer_data);
+          
           const store_id = data.store_id;
           guid = uuidv4();
               guid = guid.replace(/-/g,"");
@@ -292,6 +314,7 @@ exports.updateCustomerShopify = async (req,res) =>{
   
   try {
     const id = req.params.integration_id;
+    
     Integration.findByPk(id)
       .then( async data => {
         if (data) {
