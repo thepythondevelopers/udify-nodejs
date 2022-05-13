@@ -14,7 +14,7 @@ sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 const moment= require('moment') 
 // var expressJwt = require('express-jwt');
-
+var fs = require('fs');
 exports.signup =  (req,res)=>{
   
   const errors = validationResult(req);
@@ -122,7 +122,9 @@ exports.signin = (req,res) =>{
   });
 });
 }
-exports.updateUser = (req,res)=>{
+exports.updateUserProfile1 = async (req,res)=>{
+  
+  
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json({
@@ -130,16 +132,32 @@ exports.updateUser = (req,res)=>{
         })
     }
     const id = req.user.id;
-    content =  { 
-        first_name: req.body.first_name, 
-        last_name: req.body.last_name,
-        // email: req.body.email,
-        phone: req.body.phone
-    }
     
-    User.update(
+    if(req.file){
+      avatar =req.file.path;
+    }
+    content =  { 
+        avatar: avatar, 
+        location: req.body.location,
+        website: req.body.website,
+        about: req.body.about
+    }
+    account_find = await Account.findOne(
+      { where: { public_id: id },
+      deleted_at: {
+        [Op.is]: null, 
+      }
+     }
+    );
+    //fs.unlink(account_find.avatar);
+    fs.unlink(account_find.avatar, function (err) {
+	    
+	
+	console.log('File deleted!');
+});
+    Account.update(
       content,
-      { where: { guid: id },
+      { where: { public_id: id },
       deleted_at: {
         [Op.is]: null, 
       }
@@ -155,6 +173,59 @@ exports.updateUser = (req,res)=>{
       });
     });   
   }
+
+
+  exports.updateUserProfile2 = async (req,res)=>{
+  
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({
+            error : errors.array()
+        })
+    }
+    const id = req.user.id;
+   
+    account_content =  { 
+      company : req.body.company,
+      name : req.body.name,
+      address_street  : req.body.address_street,
+      address_city : req.body.address_city,
+      address_state : req.body.address_state,
+      address_zip : req.body.address_zip,
+      address_country : req.body.address_country
+    }
+
+    user_content = {
+      first_name : req.body.first_name,
+      last_name : req.body.last_name
+    }
+try{
+    await Account.update(
+      account_content,
+      { where: { public_id: id },
+      deleted_at: {
+        [Op.is]: null, 
+      }
+     }
+    )
+
+    await User.update(
+      user_content,
+      { where: { guid: id },
+      deleted_at: {
+        [Op.is]: null, 
+      }
+     }
+    )
+    res.send({message:'Successfully Updated'});
+  }catch (error) {
+            res.status(500).send({
+              message: error
+            });
+  }    
+}
+
+
 
   exports.forget_password =  (req,res)=>{
     const errors = validationResult(req);

@@ -65,6 +65,21 @@ module.exports = (sequelize, Sequelize) => {
     },
 	stripe_customer_id:{
         type: Sequelize.STRING(80),
+    },
+    location:{
+      type: Sequelize.STRING()
+    },
+    website:{
+      type: Sequelize.STRING()
+    },
+    about:{
+      type: Sequelize.TEXT()
+    },
+    avatar:{
+      type: Sequelize.STRING()
+    },
+    company:{
+      type: Sequelize.STRING()
     }
       
     },{
