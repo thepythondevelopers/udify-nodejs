@@ -12,7 +12,7 @@ router.get("/get-single-customer/:customer_id",verifyToken,getSingleCustomer);
 router.post("/get-all-product-store",verifyToken,isAccountCheck,getProductAccordingtoStore);
 router.post("/get-all-customer-store",verifyToken,getCustomerAccordingtoStore);
 
-router.post("/create-customer/:integration_id",verifyToken,[
+router.post("/create-customer/:store_id",verifyToken,[
         check("first_name").isLength({max : 45}).notEmpty(),
         check("last_name").isLength({max : 45}).notEmpty(),
         check("email").isLength({max : 80}).isEmail().notEmpty(),
@@ -38,11 +38,11 @@ router.post("/update-customer/:store_id/:customer_id",verifyToken,[
 
 router.post("/delete-shopify-customer/:store_id/:customer_id",verifyToken,deleteCustomerShopify);
 
-router.post("/create-product/:store_id",verifyToken,[
+router.post("/create-product/:integration_id",verifyToken,[
     check("title").isLength({max : 225}).notEmpty(),
     check("body_html").notEmpty(),
     check("vendor").isLength({max : 255}).notEmpty(),
     check("product_type").isLength({max : 255}).notEmpty()
 ],createProductShopify);
-router.post("/delete-shopify-product/:store_id/:product_id",verifyToken,deleteProductShopify);
+router.post("/delete-shopify-product/:integration_id/:product_id",verifyToken,deleteProductShopify);
 module.exports = router;

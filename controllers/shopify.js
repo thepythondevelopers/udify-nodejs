@@ -369,7 +369,7 @@ exports.updateCustomerShopify = async (req,res) =>{
                 province : customer.default_address.province,
                 country : customer.default_address.country,
                 zip : customer.default_address.zip,
-                phone : customer.default_address.phone,
+                phone : customer.phone,
                 province_code : customer.default_address.province_code,
                 country_code : customer.default_address.country_code,
                 country_name : customer.default_address.country_name,
