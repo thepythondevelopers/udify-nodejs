@@ -8,7 +8,7 @@ const {syncOrder,getOrderAccordingtoStore,getSingleOrder} = require("../controll
 const {verifyToken,isAccountCheck,roleCheck} = require("../controllers/auth");
 
 
-router.get("/shopify-order-sync/:integration_id",verifyToken,syncOrder);
+router.get("/sync-order/:integration_id",verifyToken,syncOrder);
 
 router.post("/get-all-order-store",verifyToken,getOrderAccordingtoStore);
 router.get("/get-single-order/:order_id",verifyToken,getSingleOrder);
