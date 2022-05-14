@@ -36,13 +36,13 @@ router.post("/update-customer/:integration_id/:customer_id",verifyToken,[
     check("country").isLength({max : 10}).notEmpty()
 ],updateCustomerShopify);
 
-router.post("/delete-shopify-customer/:integration_id/:customer_id",verifyToken,deleteCustomerShopify);
+router.post("/delete-shopify-customer/:store_id/:customer_id",verifyToken,deleteCustomerShopify);
 
-router.post("/create-product/:integration_id",verifyToken,[
+router.post("/create-product/:store_id",verifyToken,[
     check("title").isLength({max : 225}).notEmpty(),
     check("body_html").notEmpty(),
     check("vendor").isLength({max : 255}).notEmpty(),
     check("product_type").isLength({max : 255}).notEmpty()
 ],createProductShopify);
-router.post("/delete-shopify-product/:integration_id/:product_id",verifyToken,deleteProductShopify);
+router.post("/delete-shopify-product/:store_id/:product_id",verifyToken,deleteProductShopify);
 module.exports = router;

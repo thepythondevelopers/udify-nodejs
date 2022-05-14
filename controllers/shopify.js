@@ -191,8 +191,8 @@ exports.createCustomerShopify = async (req,res) =>{
       })
   }
   try {
-    const id = req.params.integration_id;
-    Integration.findByPk(id)
+    const id = req.params.store_id;
+    Integration.findOne({ where: { store_id: id } })
       .then( async data => {
         if (data) {
           const shopify = new Shopify({
@@ -255,7 +255,11 @@ exports.createCustomerShopify = async (req,res) =>{
             await   Customer.create(customer_content);
 
            return res.json({message : "Customer Created Successfully."});
-        }
+        }else{
+          res.status(401).send({
+            message : "Store Not Found."
+          });
+        }  
       }).catch(err => {
         res.status(500).send({
           message: "Error retrieving shopify account with id=" + id,
@@ -274,8 +278,8 @@ exports.createCustomerShopify = async (req,res) =>{
 exports.deleteCustomerShopify = async (req,res) =>{
   
   try {
-    const id = req.params.integration_id;
-    Integration.findByPk(id)
+    const id = req.params.store_id;
+    Integration.findOne({ where: { store_id: id } })
       .then( async data => {
         if (data) {
           const shopify = new Shopify({
@@ -289,6 +293,10 @@ exports.deleteCustomerShopify = async (req,res) =>{
             }
         })
           return res.json({message : "Customer Deleted Successfully."});
+        }else{
+          res.status(401).send({
+            message : "Store Not Found."
+          });  
         }
       }).catch(err => {
         res.status(500).send({
@@ -313,9 +321,8 @@ exports.updateCustomerShopify = async (req,res) =>{
   }
   
   try {
-    const id = req.params.integration_id;
-    
-    Integration.findByPk(id)
+    const id = req.params.store_id;
+    Integration.findOne({ where: { store_id: id } })
       .then( async data => {
         if (data) {
           const shopify = new Shopify({
@@ -372,7 +379,11 @@ exports.updateCustomerShopify = async (req,res) =>{
 
               await   Customer.update(customer_content,{where: { shopify_id: customer.id }}); 
            return res.json({message : "Customer Updated Successfully."});
-        }
+        }else{
+          res.status(401).send({
+            message : "Store Not Found."
+          });  
+        }  
       }).catch(err => {
         res.status(500).send({
           message: "Error retrieving shopify account with id=" + id,
