@@ -125,16 +125,18 @@ exports.signin = (req,res) =>{
 exports.updateUserProfile1 = async (req,res)=>{
   
   
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({
-            error : errors.array()
-        })
-    }
+    // const errors = validationResult(req);
+    // if(!errors.isEmpty()){
+    //     return res.status(400).json({
+    //         error : errors.array()
+    //     })
+    // }
     const id = req.user.id;
     
     if(req.file){
       avatar =req.file.path;
+    }else{
+      avatar ='';
     }
     content =  { 
         avatar: avatar, 
