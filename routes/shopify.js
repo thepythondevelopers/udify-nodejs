@@ -24,7 +24,7 @@ router.post("/create-customer/:integration_id",verifyToken,[
         check("country").isLength({max : 10}).notEmpty()
 ],createCustomerShopify);
 
-router.post("/update-customer/:integration_id/:customer_id",verifyToken,[
+router.post("/update-customer/:store_id/:customer_id",verifyToken,[
     check("first_name").isLength({max : 45}).notEmpty(),
     check("last_name").isLength({max : 45}).notEmpty(),
     check("email").isLength({max : 80}).isEmail().notEmpty(),
