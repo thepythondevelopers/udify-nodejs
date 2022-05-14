@@ -152,11 +152,13 @@ exports.updateUserProfile1 = async (req,res)=>{
      }
     );
     //fs.unlink(account_find.avatar);
+    if (fs.existsSync(account_find.avatar)) {
     fs.unlink(account_find.avatar, function (err) {
 	    
 	
 	console.log('File deleted!');
 });
+    }
     Account.update(
       content,
       { where: { public_id: id },
