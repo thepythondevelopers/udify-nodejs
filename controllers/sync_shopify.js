@@ -134,9 +134,11 @@ exports.syncProduct =  (req,res) =>{
                   store_id : store_id
               }
           })
+          
             customer_data = await shopify.customer.list();
-   
-            await Promise.all(customer_data.map(async (element) => {
+          
+            //await Promise.all(customer_data.map(async (element) => {
+              customer_data.forEach(async element => {
               guid = uuidv4();
               guid = guid.replace(/-/g,"");
               customer_content = {
@@ -166,9 +168,10 @@ exports.syncProduct =  (req,res) =>{
                 default : element.default_address.default,
                 state :  element.state       
               }
-              Customer.create(customer_content);              
+              
+             Customer.create(customer_content);              
             
-            }));  
+            });  
 
 
 

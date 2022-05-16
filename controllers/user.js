@@ -51,8 +51,8 @@ exports.signup =  (req,res)=>{
     account_data = {
       guid : req.body.account_id,
       name : req.body.first_name,
-      api_token : user.guid,
-      public_id : api_token,
+      api_token : api_token,
+      public_id : user.guid,
       stripe_customer_id : stripe_customer.id
     }
     await Account.create(account_data); 
@@ -151,6 +151,8 @@ exports.updateUserProfile1 = async (req,res)=>{
       }
      }
     );
+    
+    if(account_find !=null){
     //fs.unlink(account_find.avatar);
     if (fs.existsSync(account_find.avatar)) {
     fs.unlink(account_find.avatar, function (err) {
@@ -159,6 +161,7 @@ exports.updateUserProfile1 = async (req,res)=>{
 	console.log('File deleted!');
 });
     }
+  }   
     Account.update(
       content,
       { where: { public_id: id },

@@ -1,7 +1,7 @@
 var express = require('express')
 var router = express.Router()
 const { check} = require("express-validator");
-const {getSingleProduct,getSingleCustomer,getProductAccordingtoStore,getCustomerAccordingtoStore,createCustomerShopify,deleteCustomerShopify,updateCustomerShopify,deleteProductShopify,createProductShopify} = require("../controllers/shopify");
+const {getSingleProduct,getSingleCustomer,getProductAccordingtoStore,getCustomerAccordingtoStore,createCustomerShopify,deleteCustomerShopify,updateCustomerShopify,deleteProductShopify,createProductShopify,updateProductShopify} = require("../controllers/shopify");
 const {verifyToken,isAccountCheck,roleCheck} = require("../controllers/auth");
 
 
@@ -38,11 +38,8 @@ router.post("/update-customer/:store_id/:customer_id",verifyToken,[
 
 router.post("/delete-shopify-customer/:store_id/:customer_id",verifyToken,deleteCustomerShopify);
 
-router.post("/create-product/:integration_id",verifyToken,[
-    check("title").isLength({max : 225}).notEmpty(),
-    check("body_html").notEmpty(),
-    check("vendor").isLength({max : 255}).notEmpty(),
-    check("product_type").isLength({max : 255}).notEmpty()
-],createProductShopify);
-router.post("/delete-shopify-product/:integration_id/:product_id",verifyToken,deleteProductShopify);
+router.post("/create-product/:store_id",verifyToken,createProductShopify);
+router.post("/update-product/:store_id/:product_id",verifyToken,updateProductShopify);
+
+router.post("/delete-shopify-product/:store_id/:product_id",verifyToken,deleteProductShopify);
 module.exports = router;

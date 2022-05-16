@@ -78,6 +78,10 @@ exports.syncOrder =  (req,res) =>{
         }));
         return res.json(
             {message:"Order Synced Successfully"});
+        }else{
+          res.status(401).send({
+            message : "Store Not Found."
+          });
         }
     }) .catch(err => {
         res.status(500).send({
