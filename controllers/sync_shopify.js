@@ -19,19 +19,34 @@ exports.syncProduct =  (req,res) =>{
             accessToken: data.access_token
           });
           
-          try {
+          
             const store_id = data.store_id;
 
-            await Product.destroy({
-              where: {store_id : store_id}
-            })
-            await ProductVariant.destroy({
-              where: {store_id : store_id}
-            })  
+            
             
 
-          product_data = await shopify.product.list();
-          product_data.forEach( async element => {                
+          //product_data = await shopify.product.count();
+
+           product_data=[];
+          let params = { limit: 250 };
+          // product_data =  await shopify.product.list(params);
+          do {
+            const products = await shopify.product.list(params);
+            await Promise.all(products.map(async (element) => {
+              product_data.push(element);
+            }))
+            
+            params = products.nextPageParameters;
+            
+          } while (params !== undefined);
+          await Product.destroy({
+            where: {store_id : store_id}
+          })
+          await ProductVariant.destroy({
+            where: {store_id : store_id}
+          })  
+          //product_data.forEach( async element => {                
+          await Promise.all(product_data.map(async (element) => {  
             guid = uuidv4();
             guid_product = guid.replace(/-/g,"");
             product_content = {
@@ -53,8 +68,35 @@ exports.syncProduct =  (req,res) =>{
                 vendor:element.vendor,  
                 status:element.status
             };
-            variants = element.variants;
-            variants.forEach(async product_variant => {
+            await   Product.create(product_content);
+            await shopify_sync_variants(element.variants,store_id);
+           // variants = element.variants;
+            
+                                    
+            
+      }));
+      return res.json({message:"Product Synced Successfully"});
+          
+          
+        } else {
+          res.status(404).send({
+            message: `Cannot connect shopify with id=${id}.`
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error retrieving shopify account with id=" + id,
+          error : err
+        });
+      });
+      
+      
+  }
+
+  function shopify_sync_variants(variants,store_id) {
+    //variants.forEach(async product_variant => {
+             Promise.all(variants.map(async (product_variant) => {  
                 guid = uuidv4();
                 guid_variation = guid.replace(/-/g,"");
                 product_variant_data = {
@@ -88,31 +130,7 @@ exports.syncProduct =  (req,res) =>{
                 }
                 await   ProductVariant.create(product_variant_data);
 
-            });
-            await   Product.create(product_content);                        
-            
-      });
-      return res.json(
-        {message:"Product Synced Successfully"});
-          } catch (error) {
-            res.status(500).send({
-              message: error
-            });
-          }
-          
-        } else {
-          res.status(404).send({
-            message: `Cannot connect shopify with id=${id}.`
-          });
-        }
-      })
-      .catch(err => {
-        res.status(500).send({
-          message: "Error retrieving shopify account with id=" + err
-        });
-      });
-      
-      
+            }));
   }
 
   exports.syncCustomer = (req,res) =>{
@@ -127,7 +145,7 @@ exports.syncProduct =  (req,res) =>{
           });
           
 
-          try {                
+          
             const store_id = data.store_id;
             Customer.destroy({
               where: {
@@ -135,10 +153,24 @@ exports.syncProduct =  (req,res) =>{
               }
           })
           
-            customer_data = await shopify.customer.list();
+          customer_data=[];
+            let params = { limit: 250 };
+
+            do {
+              const customers = await shopify.customer.list(params);
+              await Promise.all(customers.map(async (element) => {
+                customer_data.push(element);
+              }))
+              
+              params = customers.nextPageParameters;
+              
+            } while (params !== undefined);
           
-            //await Promise.all(customer_data.map(async (element) => {
-              customer_data.forEach(async element => {
+          
+            
+          
+            await Promise.all(customer_data.map(async (element) => {
+                  
               guid = uuidv4();
               guid = guid.replace(/-/g,"");
               customer_content = {
@@ -154,36 +186,28 @@ exports.syncProduct =  (req,res) =>{
                 total_spent : element.total_spent,
                 tax_exempt : element.tax_exempt,
                 shopify_id : element.id,
-                company : element.default_address.company,
-                address_line1 : element.default_address.address1,
-                address_line2  : element.default_address.address2,
-                city : element.default_address.city,
-                province : element.default_address.province,
-                country : element.default_address.country,
-                zip : element.default_address.zip,
-                phone : element.default_address.phone,
-                province_code : element.default_address.province_code,
-                country_code : element.default_address.country_code,
-                country_name : element.default_address.country_name,
-                default : element.default_address.default,
+                company :  (typeof element.default_address !== 'undefined') ? element.default_address.company : '',
+                address_line1 : (typeof element.default_address !== 'undefined') ? element.default_address.address_line1 : '',
+                address_line2  : (typeof element.default_address !== 'undefined') ? element.default_address.address_line2 : '',
+                city : (typeof element.default_address !== 'undefined') ? element.default_address.city : '',
+                province : (typeof element.default_address !== 'undefined') ? element.default_address.province : '',
+                country : (typeof element.default_address !== 'undefined') ? element.default_address.country : '',
+                zip : (typeof element.default_address !== 'undefined') ? element.default_address.zip : '',
+                phone : (typeof element.default_address !== 'undefined') ? element.default_address.phone : '',
+                province_code : (typeof element.default_address !== 'undefined') ? element.default_address.province_code : '',
+                country_code : (typeof element.default_address !== 'undefined') ? element.default_address.country_code : '',
+                country_name : (typeof element.default_address !== 'undefined') ? element.default_address.country_name : '',
+                default : (typeof element.default_address !== 'undefined') ? element.default_address.default : null,
                 state :  element.state       
               }
-              
-             Customer.create(customer_content);              
-            
-            });  
-
-
-
+        
+           await Customer.create(customer_content);              
+          
+            }));  
             
             return res.json(
               {message:"Customer Synced Successfully"});
-            
-          }catch (error) {
-            res.status(500).send({
-              message: error
-            });
-          }
+
         } else {
           res.status(404).send({
             message: `Cannot connect shopify with id=${id}.`
@@ -192,7 +216,8 @@ exports.syncProduct =  (req,res) =>{
       })
       .catch(err => {
         res.status(500).send({
-          message: "Error retrieving shopify account with id=" + id
+          message: "Error retrieving shopify account with id=" + id,
+          error : err
         });
       });
       

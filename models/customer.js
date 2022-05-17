@@ -29,7 +29,6 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.BOOLEAN()
       },
      email:{
-        allowNull: false,
         type: Sequelize.STRING(80)
      },
     orders_count:{

@@ -50,13 +50,13 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER()
       },
       option1:{
-        type: Sequelize.STRING(50)
+        type: Sequelize.STRING()
       },
       option2:{
-        type: Sequelize.STRING(50)
+        type: Sequelize.STRING()
       },
       option3:{
-        type: Sequelize.STRING(50)
+        type: Sequelize.STRING()
       },
       position:{
         type: Sequelize.INTEGER()

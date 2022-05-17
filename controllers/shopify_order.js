@@ -18,8 +18,22 @@ exports.syncOrder =  (req,res) =>{
           });
             
 
-          order_data = await shopify.order.list();
+          //order_data = await shopify.order.list();
           const store_id = data.store_id;
+          
+          order_data=[];
+          let params = { limit: 250 };
+          // product_data =  await shopify.product.list(params);
+          do {
+            const orders = await shopify.order.list(params);
+            await Promise.all(orders.map(async (element) => {
+              order_data.push(element);
+            }))
+            
+            params = orders.nextPageParameters;
+            
+          } while (params !== undefined);
+          
           Order.destroy({
             where: {
                 store_id : store_id
