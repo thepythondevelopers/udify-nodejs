@@ -76,7 +76,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.TEXT()
     },
     avatar:{
-      type: Sequelize.STRING()
+      type: Sequelize.STRING(),
+      // get() {
+      //     return 'https://udifyapi.pamsar.com/uploads/avatar/'+this.getDataValue('avatar') 
+      //   }
     },
     company:{
       type: Sequelize.STRING()

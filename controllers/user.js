@@ -134,16 +134,21 @@ exports.updateUserProfile1 = async (req,res)=>{
     const id = req.user.id;
     
     if(req.file){
-      avatar =req.file.path;
+      avatar =req.file.filename;
+        content =  { 
+          avatar: avatar, 
+          location: req.body.location,
+          website: req.body.website,
+          about: req.body.about
+      }
     }else{
-      avatar ='';
+        content =  {       
+          location: req.body.location,
+          website: req.body.website,
+          about: req.body.about
+      }
     }
-    content =  { 
-        avatar: avatar, 
-        location: req.body.location,
-        website: req.body.website,
-        about: req.body.about
-    }
+    
     account_find = await Account.findOne(
       { where: { public_id: id },
       deleted_at: {
@@ -153,13 +158,15 @@ exports.updateUserProfile1 = async (req,res)=>{
     );
     
     if(account_find !=null){
-    //fs.unlink(account_find.avatar);
-    if (fs.existsSync(account_find.avatar)) {
-    fs.unlink(account_find.avatar, function (err) {
-	    
+      if(req.file){
+      //fs.unlink(account_find.avatar);
+    if (fs.existsSync('./uploads/avatar/'+account_find.avatar)) {
+    fs.unlink('./uploads/avatar/'+account_find.avatar, function (err) {
+    //  if (err) console.log(err);
 	
 	console.log('File deleted!');
 });
+    }
     }
   }   
     Account.update(
@@ -346,6 +353,10 @@ try{
      if (!user) {
         res.json({error:'User Not Found.'});
      } else {
+       
+      if(user.account.avatar!==""){
+      user.account.avatar = 'https://udifyapi.pamsar.com/uploads/avatar/'+user.account.avatar
+      }
       res.json(user);
      }
     }).catch(err => {

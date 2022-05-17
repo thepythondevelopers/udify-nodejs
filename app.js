@@ -21,8 +21,8 @@ const path = require("path");
 
 
 
-// app.use(express.static('uploads')); 
-// app.use('/images', express.static('uploads'));
+app.use(express.static('uploads/avatar')); 
+app.use('/uploads/avatar', express.static('uploads/avatar'));
 
 
 // fs.unlink('./uploads/1652172809118account.png', function (err) {
