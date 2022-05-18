@@ -16,6 +16,7 @@ const accountRoutes = require("./routes/account");
 const integrationRoutes = require("./routes/integration");
 const plaidRoutes = require("./routes/plaid");
 const userRoutes = require("./routes/user");
+const shopifyProductRoutes = require("./routes/shopify_product");
 
 const path = require("path");
 
@@ -25,11 +26,7 @@ app.use(express.static('uploads/avatar'));
 app.use('/uploads/avatar', express.static('uploads/avatar'));
 
 
-// fs.unlink('./uploads/1652172809118account.png', function (err) {
-// 	if (err) throw err;
-// 	// if no error, file has been deleted successfully
-// 	console.log('File deleted!');
-// });
+
 
 
 
@@ -60,6 +57,7 @@ app.use('/api',plaidRoutes);
 app.use('/api',userRoutes);
 app.use('/api',syncShopifyRoutes);
 app.use('/api',syncOrderShopifyRoutes);
+app.use('/api',shopifyProductRoutes);
 
 const db = require("./models");
 
