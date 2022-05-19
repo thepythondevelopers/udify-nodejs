@@ -45,7 +45,9 @@ const client = redis.createClient({ url: 'rediss://default:AVNS_H1ldRswWtOxMWL-@
 
 const port = process.env.PORT || 8000;
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+  limit: '50mb'
+}));
 app.use(cookieParser());
 app.use(cors());
 
