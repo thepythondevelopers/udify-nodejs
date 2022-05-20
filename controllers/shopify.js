@@ -649,6 +649,41 @@ exports.updateProductShopify = async (req,res) =>{
   }
 }
 
+
+exports.checkCustomerEmailExist = async (req,res) =>{
+  
+
+  await Customer.findOne({ where: { store_id: req.params.store_id,email:req.body.email } })
+  .then(  data => {
+    if (data) {
+      return res.json({"message":'Email Exist'});
+    }
+    return res.json({"message":'Not Exist'});
+  }).catch(err => {
+    res.status(500).send({
+      message: "Something Went Wrong",
+      err_m : err
+    });
+  });
+
+}  
+
+
+
+exports.checkCustomerPhoneExist =  (req,res) =>{
+  Customer.findOne({ where: { store_id: req.params.store_id,phone:req.body.phone } }).then(  data => {
+    if (data) {
+      return res.json({"message":'Phone Exist'});
+    }
+    return res.json({"message":'Not Exist'});
+  }).catch(err => {
+    res.status(500).send({
+      message: "Something Went Wrong",
+      err_m : err
+    });
+  });
+}  
+
 exports.image = async (req,res) =>{
   return res.json(req.file);
 }

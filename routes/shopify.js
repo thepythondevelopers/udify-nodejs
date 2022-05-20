@@ -1,7 +1,8 @@
 var express = require('express')
 var router = express.Router()
 const { check} = require("express-validator");
-const {getSingleProduct,getSingleCustomer,getProductAccordingtoStore,getCustomerAccordingtoStore,createCustomerShopify,deleteCustomerShopify,updateCustomerShopify,deleteProductShopify,createProductShopify,updateProductShopify} = require("../controllers/shopify");
+const {getSingleProduct,getSingleCustomer,getProductAccordingtoStore,getCustomerAccordingtoStore,createCustomerShopify,deleteCustomerShopify,updateCustomerShopify,deleteProductShopify,createProductShopify,updateProductShopify,checkCustomerEmailExist,
+    checkCustomerPhoneExist} = require("../controllers/shopify");
 const {verifyToken,isAccountCheck,roleCheck} = require("../controllers/auth");
 
 
@@ -42,4 +43,9 @@ router.post("/create-product/:store_id",verifyToken,createProductShopify);
 router.post("/update-product/:store_id/:product_id",verifyToken,updateProductShopify);
 
 router.post("/delete-shopify-product/:store_id/:product_id",verifyToken,deleteProductShopify);
+
+router.post("/customer-check-email-exist/:store_id",verifyToken,checkCustomerEmailExist);
+router.post("/customer-check-phone-exist/:store_id",verifyToken,checkCustomerPhoneExist);
+
+
 module.exports = router;
