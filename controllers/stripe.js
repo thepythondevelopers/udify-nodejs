@@ -10,19 +10,24 @@ require('dotenv').config();
 
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 
-exports.createCustomerAndSubscription = (req,res)=>{
+// exports.createCustomerAndSubscription = (req,res)=>{
     
-    return stripe.customers.create({
-    source: req.body.stripeToken,
-    email: req.body.customerEmail
-  }).then(customer => {
-    stripe.subscriptions.create({
-      customer: customer.id,
-      items: [
-        {
-          plan: req.body.planId
-        }
-      ]
-    });
-  });
+//     return stripe.customers.create({
+//     source: req.body.stripeToken,
+//     email: req.body.customerEmail
+//   }).then(customer => {
+//     stripe.subscriptions.create({
+//       customer: customer.id,
+//       items: [
+//         {
+//           plan: req.body.planId
+//         }
+//       ]
+//     });
+//   });
+// }
+
+
+exports.stripeSubscription = (req,res)=>{
+  return res.json(req.body);
 }

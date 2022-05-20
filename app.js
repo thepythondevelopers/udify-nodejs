@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const express = require("express");
-var mysql = require('mysql');
+//var mysql = require('mysql');
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -9,6 +9,8 @@ const cookieParser = require("cookie-parser");
 const redis = require('redis');
 
 //Routes
+const stripeRoutes = require("./routes/stripe");
+const planRoutes = require("./routes/plan");
 const syncOrderShopifyRoutes = require("./routes/order_sync");
 const syncShopifyRoutes = require("./routes/sync_shopify");
 const shopifyRoutes = require("./routes/shopify");
@@ -52,6 +54,7 @@ app.use(cookieParser());
 app.use(cors());
 
 //My Routes
+
 app.use('/api/shopify',shopifyRoutes);
 app.use('/api',accountRoutes);
 app.use('/api',integrationRoutes);
@@ -60,6 +63,8 @@ app.use('/api',userRoutes);
 app.use('/api',syncShopifyRoutes);
 app.use('/api',syncOrderShopifyRoutes);
 app.use('/api',shopifyProductRoutes);
+app.use('/api',planRoutes);
+app.use('/api',stripeRoutes);
 
 const db = require("./models");
 

@@ -4,17 +4,18 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   dialect: dbConfig.dialect,
   
-  pool: {
-    connectionLimit : 100, //important
-    max: dbConfig.pool.max,
-    min: dbConfig.pool.min,
-    acquire: dbConfig.pool.acquire,
-    idle: dbConfig.pool.idle
-  }
+  // pool: {
+  //   connectionLimit : 100, //important
+  //   max: dbConfig.pool.max,
+  //   min: dbConfig.pool.min,
+  //   acquire: dbConfig.pool.acquire,
+  //   idle: dbConfig.pool.idle
+  // }
 });
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
+db.plan = require("./plans.js")(sequelize, Sequelize);
 db.order = require("./order.js")(sequelize, Sequelize);
 db.customer = require("./customer.js")(sequelize, Sequelize);
 db.userToken = require("./userToken.js")(sequelize, Sequelize);
