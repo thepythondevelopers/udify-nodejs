@@ -20,6 +20,14 @@ module.exports = (sequelize, Sequelize) => {
       type: {
         type: Sequelize.STRING(),
         allowNull: false,
+      },
+      price: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      features: {
+        type: Sequelize.TEXT('long'),
+        allowNull: false,
       },     
       created_at :{
         allowNull: false,
