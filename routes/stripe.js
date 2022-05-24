@@ -9,11 +9,14 @@ const {verifyToken,isAccountCheck,roleCheck} = require("../controllers/auth");
 
 
 router.post("/stripe",verifyToken,[
-    check("user_id").notEmpty(),
-    check("stripe_customer_id").notEmpty(),
-    check("plan_id").notEmpty(),
+    check("number").notEmpty(),
+    check("exp_month").notEmpty(),
+    check("exp_year").notEmpty(),
+    check("cvc").notEmpty(),
+    check("billing_details_name").notEmpty(),
+    check("public_id").notEmpty(),
+    check("customerId").notEmpty(),
+    check("priceId").notEmpty(),
 ],stripeSubscription);
-
-
 
 module.exports = router;

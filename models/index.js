@@ -15,6 +15,7 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
+db.stripeSubscription = require("./stripe_subscriptions.js")(sequelize, Sequelize);
 db.plan = require("./plans.js")(sequelize, Sequelize);
 db.order = require("./order.js")(sequelize, Sequelize);
 db.customer = require("./customer.js")(sequelize, Sequelize);

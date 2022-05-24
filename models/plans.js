@@ -16,6 +16,10 @@ module.exports = (sequelize, Sequelize) => {
       price_id: {
         type: Sequelize.STRING(),
         allowNull: false,
+      },
+      type: {
+        type: Sequelize.STRING(),
+        allowNull: false,
       },     
       created_at :{
         allowNull: false,
