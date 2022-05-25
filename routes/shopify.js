@@ -12,7 +12,7 @@ router.get("/get-single-customer/:customer_id",verifyToken,getSingleCustomer);
 
 router.post("/get-all-product-store",verifyToken,isAccountCheck,checkStoreId,getProductAccordingtoStore);
 
-router.post("/get-all-customer-store",verifyToken,checkStoreId,getCustomerAccordingtoStore);
+router.post("/get-all-customer-store",verifyToken,isAccountCheck,checkStoreId,getCustomerAccordingtoStore);
 
 router.post("/create-customer/:store_id",verifyToken,[
         check("first_name").isLength({max : 45}).notEmpty(),
