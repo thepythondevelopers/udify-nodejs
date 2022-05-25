@@ -1,11 +1,15 @@
 const db = require("../models");
 const Account = db.account;
+const Integration = db.integration;
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var jwt = require('jsonwebtoken');
 const { json } = require("body-parser");
+const { integration } = require("../models");
 require('dotenv').config();
 const UserToken = db.userToken;
+const Op = db.Sequelize.Op;
+var pluck = require('arr-pluck');
 // Protected Routes
 
 // exports.isSignedIn = expressJwt({
@@ -62,6 +66,21 @@ if (acc === null) {
 }
 
     next();  
+}
+
+exports.checkStoreId = async(req,res,next)=>{
+  if(req.body.store_id !=0){
+    body_store_id = req.body.store_id;
+    const inte = await Integration.findAll({ 
+    attributes:  ['store_id'],
+    where: { account_id: req.body.account_id },        deleted_at: {
+    [Op.is]: null, 
+  } });
+  user_store_id = pluck(inte, 'store_id');
+  let intersection = user_store_id.filter(x => body_store_id.includes(x));
+  req.body.store_id = intersection;
+  }
+  next();
 }
 
 exports.roleCheck = (req,res,next) =>{
