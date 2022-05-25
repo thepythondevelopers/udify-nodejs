@@ -39,6 +39,7 @@ exports.findIntegration = (req,res) =>{
     Integration.findOne({
       where: {
         guid: id,
+        account_id :req.body.account_id,
         deleted_at: {
           [Op.is]: null, 
         } 
@@ -65,6 +66,7 @@ exports.findIntegration = (req,res) =>{
     Integration.findAll({ 
       attributes: {exclude: ['access_token','store_api_key','store_api_secret']},
       where: {
+        account_id :req.body.account_id,
     deleted_at: {
       [Op.is]: null, 
     }}
@@ -97,7 +99,7 @@ exports.updateIntegration = (req,res)=>{
 
   Integration.update(
     content,
-    { where: { guid: id },
+    { where: { guid: id ,account_id :req.body.account_id},
     deleted_at: {
       [Op.is]: null, 
     }
