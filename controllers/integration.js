@@ -3,10 +3,10 @@ const db = require("../models");
 const Integration = db.integration;
 const Op = db.Sequelize.Op;
 const {validationResult} = require("express-validator");
-
+const Shopify = require('shopify-api-node');
  
 
-exports.createIntegration =  (req,res) =>{
+exports.createIntegration = async (req,res) =>{
   
   const errors = validationResult(req);
   if(!errors.isEmpty()){
@@ -14,15 +14,22 @@ exports.createIntegration =  (req,res) =>{
           error : errors.array()
       })
   }
-  guid = uuidv4();
+  const shopify = new Shopify({
+    shopName: req.body.domain,
+    accessToken: req.body.access_token
+  });
+  let params = { limit: 1 };
+            const products = await shopify.product.list(params).then( async data => {
+ guid = uuidv4();
   guid = guid.replace(/-/g,""); 
   req.body.guid = guid;
 
   store_id = uuidv4();
   store_id = store_id.replace(/-/g,"");
   req.body.store_id = store_id;
-    //return res.json(req.body.store_api_key);
-      Integration
+    
+
+     await Integration
       .create(req.body)
       .then(integration => {
         return res.json(integration);
@@ -31,7 +38,14 @@ exports.createIntegration =  (req,res) =>{
             message : "Unable to sabe in db",
             error : err 
         })
-      })   
+      })  
+            }).catch(err => {
+              res.status(500).send({
+                message:
+                  err.message || "Some error occurred while Syncing."
+              });
+            });
+   
 }
 
 exports.findIntegration = (req,res) =>{
