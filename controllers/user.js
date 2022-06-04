@@ -142,9 +142,6 @@ exports.signin = (req,res) =>{
 });
 }
 
-function admin_sign() {
-  
-}
 
 exports.updateUserProfile1 = async (req,res)=>{
   

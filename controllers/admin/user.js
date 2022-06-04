@@ -11,7 +11,8 @@ const sendGridMail = require('@sendgrid/mail');
 sendGridMail.setApiKey(process.env.SENDGRID_API_KEY);
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 var fs = require('fs');
-
+var jwt = require('jsonwebtoken');
+const moment= require('moment'); 
 
 exports.getUsers = (req,res) =>{
     const id = req.params.id;
@@ -72,4 +73,57 @@ exports.getUsers = (req,res) =>{
       });
   }  
   
+  exports.getUserToken = (req,res) =>{
+    
+    const user_id = req.params.user_id;
+    
+  User.findOne({
+    where: {
+        guid: user_id,
+        access_group: {[Op.not]:'admin'}
+           }
+  }).then(async user => {
+ if (!user) {
+    res.json({error:'User Not Found'});
+ } else {
   
+    
+        //create token
+        
+      var token = jwt.sign({ id: user.guid, access_group: user.access_group }, process.env.SECRET,{ expiresIn: '1d'  });
+      guid = uuidv4();
+      guid = guid.replace(/-/g,"");
+      user_token_data = {
+        id :guid,
+        token : token 
+      }
+      await UserToken.create(user_token_data).then(function (user_token) {
+        
+      }).catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred."
+        });
+      });
+      
+      
+      await UserToken.destroy({
+        where: {
+          created_at: {
+            [Op.lte]: moment().subtract(2, 'days').toDate()
+          }
+        }
+      })
+      email = user.email;
+      access_group = user.access_group;
+      res.json({token,user:{email,access_group}});
+    
+  
+}
+}).catch(err => {
+res.status(500).send({
+  message:
+    err.message || "Some error occurred."
+});
+});
+  }
