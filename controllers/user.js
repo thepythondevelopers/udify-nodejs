@@ -79,11 +79,22 @@ exports.signup =  (req,res)=>{
 }; 
 
 exports.signin = (req,res) =>{
-  User.findOne({
-    where: {
-        email: req.body.email
-           }
-  }).then(function (user) {
+  if(req.body.role=='admin'){
+    userquery = User.findOne({
+      where: {
+          email: req.body.email,
+          access_group:"admin"
+             }
+    })  
+  }else{
+    userquery = User.findOne({
+      where: {
+          email: req.body.email,
+          access_group: {[Op.not]:'admin'}
+             }
+    })
+  }
+  userquery.then(function (user) {
    if (!user) {
       res.json({error:'User Not Found'});
    } else {
@@ -103,7 +114,7 @@ exports.signin = (req,res) =>{
         }).catch(err => {
           res.status(500).send({
             message:
-              err.message || "Some error occurred while updating User Profile."
+              err.message || "Some error occurred."
           });
         });
         
@@ -126,10 +137,15 @@ exports.signin = (req,res) =>{
 }).catch(err => {
   res.status(500).send({
     message:
-      err.message || "Some error occurred while updating User Profile."
+      err.message || "Some error occurred."
   });
 });
 }
+
+function admin_sign() {
+  
+}
+
 exports.updateUserProfile1 = async (req,res)=>{
   
   
