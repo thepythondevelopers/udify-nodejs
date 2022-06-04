@@ -99,3 +99,13 @@ exports.roleCheck = (req,res,next) =>{
  
     next();
 }
+
+
+exports.adminroleCheck = (req,res,next) =>{
+  if(req.user.access_group!='admin'){
+      return res.status(404).json({
+          err  : "Does't Not have permission."
+      })
+  }  
+  next();
+}

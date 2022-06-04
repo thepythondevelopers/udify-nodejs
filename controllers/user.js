@@ -1,4 +1,3 @@
-
 const db = require("../models");
 const User = db.user;
 const Account = db.account;
@@ -32,14 +31,22 @@ exports.signup =  (req,res)=>{
   account_id  = uuidv4();
   account_id  = account_id.replace(/-/g,""); 
   req.body.account_id  = account_id ;
-
+ 
   api_token  = uuidv4();
   api_token  = api_token.replace(/-/g,""); 
   
-
+  user_data = {
+    guid : req.body.guid,
+    first_name: req.body.first_name,
+    last_name : req.body.last_name,
+    password : req.body.password,
+    email: req.body.email,
+    notification_email_list:req.body.notification_email_list,
+    account_id : req.body.account_id 
+  }
 
   
-  User.create(req.body)
+  User.create(user_data)
   .then(async user => {
     
     const stripe_customer = await stripe.customers.create({
@@ -84,7 +91,7 @@ exports.signin = (req,res) =>{
       if (result == true) {
           //create token
           
-        var token = jwt.sign({ id: user.guid }, process.env.SECRET,{ expiresIn: '1d'  });
+        var token = jwt.sign({ id: user.guid, access_group: user.access_group }, process.env.SECRET,{ expiresIn: '1d'  });
         guid = uuidv4();
         guid = guid.replace(/-/g,"");
         user_token_data = {
@@ -109,7 +116,8 @@ exports.signin = (req,res) =>{
           }
         })
         email = user.email;
-        res.json({token,user:{email}});
+        access_group = user.access_group;
+        res.json({token,user:{email,access_group}});
       } else {
         res.json({error:"Incorrect Password"});
       }
