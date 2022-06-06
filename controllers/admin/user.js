@@ -153,7 +153,7 @@ res.status(500).send({
     user_id = req.params.user_id;
     
     await User.update(
-      {deleted_at: ""},
+      {deleted_at: null},
       { where: { guid: user_id },
       access_group: {[Op.not]:'admin'}
      }
