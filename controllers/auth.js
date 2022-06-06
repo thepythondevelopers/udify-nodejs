@@ -1,5 +1,6 @@
 const db = require("../models");
 const Account = db.account;
+const User = db.user;
 const Integration = db.integration;
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
@@ -40,6 +41,20 @@ exports.verifyToken = async (req, res, next) => {
   }
   req.user = decoded;
   
+  check_user = await User.findOne({ where: { guid: req.user.id,
+    deleted_at: {
+      [Op.is]: null, 
+    }
+  
+  }});
+  if(check_user==null){
+    await UserToken.destroy({
+      where: {
+        token: token 
+      }
+    })
+    return res.json({"message" : "Inactive User"});
+  }
     
   } catch (err_m) {
     return res.status(401).send({

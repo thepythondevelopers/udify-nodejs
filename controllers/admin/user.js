@@ -43,6 +43,7 @@ exports.getUsers = (req,res) =>{
 
   exports.getUser = (req,res) =>{
     const user_id = req.params.user_id;
+    const search_string = req.body.search_string!=null ? req.body.search_string : "";
     User.findOne({
         attributes: {exclude: ['password']},
         where: {        
@@ -53,6 +54,12 @@ exports.getUsers = (req,res) =>{
         //   [Op.is]: null, 
         // } 
       },
+      [Op.or]: [
+        { first_name: { [Op.like]: `%${search_string}%` } },
+        { last_name: { [Op.like]: `%${search_string}%` } },
+        { email: { [Op.like]: `%${search_string}%` } },
+        { phone: { [Op.like]: `%${search_string}%` } },
+      ],
       include: [{
         model: Account
         }]       
@@ -127,3 +134,31 @@ res.status(500).send({
 });
 });
   }
+
+  exports.disableUser =async (req,res) =>{
+    user_id = req.params.user_id;
+    
+    await User.update(
+      {deleted_at: Date()},
+      { where: { guid: user_id },
+      access_group: {[Op.not]:'admin'}
+     }
+    );
+    res.status(200).send({
+      message:"User Disable"
+    });
+  }    
+
+  exports.enableUser =async (req,res) =>{
+    user_id = req.params.user_id;
+    
+    await User.update(
+      {deleted_at: ""},
+      { where: { guid: user_id },
+      access_group: {[Op.not]:'admin'}
+     }
+    );
+    res.status(200).send({
+      message:"User Enable"
+    });
+  }    

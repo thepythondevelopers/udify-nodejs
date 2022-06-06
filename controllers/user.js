@@ -90,6 +90,9 @@ exports.signin = (req,res) =>{
     userquery = User.findOne({
       where: {
           email: req.body.email,
+          deleted_at: {
+            [Op.is]: null, 
+          },
           access_group: {[Op.not]:'admin'}
              }
     })
