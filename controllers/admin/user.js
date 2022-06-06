@@ -16,6 +16,7 @@ const moment= require('moment');
 
 exports.getUsers = (req,res) =>{
     const id = req.params.id;
+    const search_string = req.body.search_string!=null ? req.body.search_string : "";
     User.findAll({
       where: {
         
@@ -23,6 +24,12 @@ exports.getUsers = (req,res) =>{
         // deleted_at: {
         //   [Op.is]: null, 
         // } 
+        [Op.or]: [
+          { first_name: { [Op.like]: `%${search_string}%` } },
+          { last_name: { [Op.like]: `%${search_string}%` } },
+          { email: { [Op.like]: `%${search_string}%` } },
+          { phone: { [Op.like]: `%${search_string}%` } },
+        ] 
       },
     })
       .then(data => {
@@ -54,12 +61,7 @@ exports.getUsers = (req,res) =>{
         //   [Op.is]: null, 
         // } 
       },
-      [Op.or]: [
-        { first_name: { [Op.like]: `%${search_string}%` } },
-        { last_name: { [Op.like]: `%${search_string}%` } },
-        { email: { [Op.like]: `%${search_string}%` } },
-        { phone: { [Op.like]: `%${search_string}%` } },
-      ],
+      
       include: [{
         model: Account
         }]       
