@@ -57,13 +57,14 @@ exports.getProductAccordingtoStore = async (req,res) =>{
    
    
 const search_string = req.body.search_string!=null ? req.body.search_string : "";
+const page = req.body.page!=null ? req.body.page-1 : 0;
 if(req.body.startedDate!=null && req.body.endDate!=null ){
   
   const startedDate = new Date(req.body.startedDate);
   const endDate = new Date(req.body.endDate);
   endDate.setDate(endDate.getDate() + 1);
 
-  const page = req.body.page!=null ? req.body.page-1 : 0;
+  
  
   result = await Product.findAndCountAll({
     where: {store_id : {
