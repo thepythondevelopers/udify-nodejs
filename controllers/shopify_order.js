@@ -107,6 +107,7 @@ exports.syncOrder =  (req,res) =>{
 
 
 exports.getOrderAccordingtoStore = async (req,res) =>{
+  
     try {  
     store_id =req.body.store_id!=null ? req.body.store_id : [];
     if(store_id==0){

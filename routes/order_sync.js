@@ -10,7 +10,7 @@ const {verifyToken,isAccountCheck,roleCheck,checkStoreId} = require("../controll
 
 router.get("/sync-order/:integration_id",verifyToken,syncOrder);
 
-router.post("/get-all-order-store",verifyToken,checkStoreId,getOrderAccordingtoStore);
+router.post("/get-all-order-store",verifyToken,isAccountCheck,checkStoreId,getOrderAccordingtoStore);
 router.get("/get-single-order/:order_id",verifyToken,getSingleOrder);
 
 module.exports = router;
