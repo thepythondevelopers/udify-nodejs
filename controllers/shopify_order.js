@@ -121,14 +121,15 @@ exports.getOrderAccordingtoStore = async (req,res) =>{
     }
        
   const search_string = req.body.search_string!=null ? req.body.search_string : "";
+  const page = req.body.page!=null ? req.body.page-1 : 0;
+
   if(req.body.startedDate!=null && req.body.endDate!=null ){
     
     const startedDate = new Date(req.body.startedDate);
     const endDate = new Date(req.body.endDate);
     endDate.setDate(endDate.getDate() + 1);
   
-  
-    result = await Order.findAll({
+    result = await Order.findAndCountAll({
       where: {store_id : {
         [Op.in]: store_id  
       },  [Op.or]: [
@@ -142,10 +143,12 @@ exports.getOrderAccordingtoStore = async (req,res) =>{
          [Op.between]: [startedDate, endDate]
      }
     
-    }
+    },
+    limit: 10,
+    offset: page
     })
   }else{
-    result = await Order.findAll({
+    result = await Order.findAndCountAll({
       where: {store_id : {
         [Op.in]: store_id  
       },  [Op.or]: [
@@ -154,7 +157,9 @@ exports.getOrderAccordingtoStore = async (req,res) =>{
         { subtotal: { [Op.like]: `%${search_string}%` } },
       ],
       
-    }
+    },
+    limit: 10,
+    offset: page
     })
   } 
     return res.json({data:result});

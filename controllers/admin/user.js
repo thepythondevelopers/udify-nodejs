@@ -17,7 +17,9 @@ const moment= require('moment');
 exports.getUsers = (req,res) =>{
     const id = req.params.id;
     const search_string = req.body.search_string!=null ? req.body.search_string : "";
-    User.findAll({
+    const page = req.body.page!=null ? req.body.page-1 : 0;
+
+    User.findAndCountAll({
       where: {
         
         access_group: {[Op.not]:'admin'},
@@ -31,6 +33,8 @@ exports.getUsers = (req,res) =>{
           { phone: { [Op.like]: `%${search_string}%` } },
         ] 
       },
+      limit: 10,
+      offset: page
     })
       .then(data => {
         if (data) {
