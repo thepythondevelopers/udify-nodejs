@@ -59,7 +59,7 @@ function getInTouch_email(req) {
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                       <tr>
                           <td class="logo" style="text-align: center;">
-                            <a href="#"><img src="https://udify.pamsar.com/assets/images/logo.png" width="200" height="50" alt="alt_text" border="0"  /></a>
+                            <a href="#"><img src="https://udifyapi.pamsar.com/uploads/email/logo.png" width="200" height="50" alt="alt_text" border="0" /></a>
                           </td>
                       </tr>
                   </table>
@@ -70,19 +70,19 @@ function getInTouch_email(req) {
               <td valign="middle" class="hero" style="padding: 2em 0 2em 0;">
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                     <tr>
-                          <td style="text-align: left;">
+                          <td style="text-align:left;">
                           
-                              <div class="text-inner" style="border: none;max-width: 100%;
-        margin: 0 auto;	padding: 2em;background-image: url(http://localhost:8000/uploads/email/bg.png);	background: url(http://localhost:8000/uploads/email/bg.png) #fff;	background-size: contain;">
-                            <h1 style="text-align: center;">Reset Your Password</h1>
-    <img src="forgot.png" alt="" title="" style="width: 30%;float: left;margin-right: 10px;" />						
-                                  
-                                  <span class="name">Hi John,</span>
-    <p>To set up a new password to your Enmeldung account, click "Reset Your Password" below, or use this link:</p>				           	
-                         
-                                <p style="text-align: center;"><a href="#" style="padding: 10px 65px;display: inline-block;	border-radius: 120px;	background: #46BFA8;color: #ffffff;box-shadow: 4px 7px 6px #46BFA8; text-decoration:none;">Reset Password</a></p>
-                                <p style="text-align: center;">If you didn’t request this, you can ignore this email or let us know. Your password won’t change untill you create a new password</p>
-                               </div>
+                              <tr class="text-inner" background="https://udifyapi.pamsar.com/uploads/email/bg.png" style="border: none;max-width: 100%;
+        margin: 0 auto; background-color:#fff;	padding: 2em;background-size: contain;">
+        <td>
+                            <h1 style="text-align: center;">Get In Touch</h1>
+                            <p><strong>First Name:</strong>${req.body.first_name}</p>
+                <p><strong>Last Name:</strong>${req.body.last_name}</p>
+                <p><strong>Email:</strong>${req.body.email}</</p>
+                <p><strong>Supplier:</strong>${req.body.supplier}</</p>
+                <p><strong>State:</strong>${req.body.state}</</p>
+                                <td>
+                               </tr>
                           </td>
                         </tr>
                 </table>
@@ -90,6 +90,7 @@ function getInTouch_email(req) {
               </tr>
           </table>
           <table class="footer" align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: auto;">
+                
             <tr>
               <td class="" style="text-align: center; padding: 0 7%;">
                   
