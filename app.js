@@ -20,13 +20,15 @@ const integrationRoutes = require("./routes/integration");
 const plaidRoutes = require("./routes/plaid");
 const userRoutes = require("./routes/user");
 const shopifyProductRoutes = require("./routes/shopify_product");
-
+const getInTouchRoutes = require("./routes/get_in_touch");
 const path = require("path");
 
 
 
 app.use(express.static('uploads/avatar')); 
 app.use('/uploads/avatar', express.static('uploads/avatar'));
+app.use(express.static('uploads/email')); 
+app.use('/uploads/email', express.static('uploads/email'));
 
 
 
@@ -67,6 +69,7 @@ app.use('/api',shopifyProductRoutes);
 app.use('/api',planRoutes);
 app.use('/api',stripeRoutes);
 app.use('/api',adminUser);
+app.use('/api',getInTouchRoutes);
 
 const db = require("./models");
 
