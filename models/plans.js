@@ -28,6 +28,10 @@ module.exports = (sequelize, Sequelize) => {
       features: {
         type: Sequelize.TEXT('long'),
         allowNull: false,
+      },
+      status: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },     
       created_at :{
         allowNull: false,
