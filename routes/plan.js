@@ -9,7 +9,7 @@ const {verifyToken,isAccountCheck,adminroleCheck} = require("../controllers/auth
 
 
 router.post("/get-plan",getPlan);
-router.post("/get-plan-admin",adminroleCheck,getPlanAdmin);
+router.post("/get-plan-admin",verifyToken,adminroleCheck,getPlanAdmin);
 router.post("/create-plan",verifyToken,adminroleCheck,[
     check("price").notEmpty(),
     check("name").notEmpty(),
