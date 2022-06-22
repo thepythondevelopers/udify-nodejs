@@ -130,7 +130,7 @@ exports.inactivePlan = async (req,res)=>{
    
   Plan.update(
     {status:0},
-    { where: { app_id: "prod_LutpoZhen4avJU"}
+    { where: { app_id: app_id}
    }
   )
   .then(data => {
