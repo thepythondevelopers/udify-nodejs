@@ -4,7 +4,7 @@ const { check} = require("express-validator");
 const db = require("../models");
 const User = db.user;
 
-const {getPlan,createPlan,updatePlan,inactivePlan,activePlan} = require("../controllers/plan");
+const {getPlan,createPlan,updatePlan,inactivePlan,activePlan,test} = require("../controllers/plan");
 const {verifyToken,isAccountCheck,adminroleCheck} = require("../controllers/auth");
 
 
@@ -23,5 +23,5 @@ router.post("/update-plan/:app_id",verifyToken,adminroleCheck,[
 ],updatePlan);
 router.post("/inactive-plan/:app_id",verifyToken,adminroleCheck,inactivePlan);
 router.post("/active-plan/:app_id",verifyToken,adminroleCheck,activePlan);
-
+router.get("/test",test);
 module.exports = router;

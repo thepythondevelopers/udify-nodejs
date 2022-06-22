@@ -76,6 +76,11 @@ exports.stripeSubscription = async (req,res)=>{
             object : subscription.object,
             application_fee_percent : subscription.application_fee_percent,
             billing_cycle_anchor : subscription.billing_cycle_anchor,
+
+            created : subscription.created,
+            current_period_end : subscription.current_period_end,
+            current_period_start : subscription.current_period_start,
+
             billing_thresholds : subscription.billing_thresholds,
             cancel_at : subscription.cancel_at,
             cancel_at_period_end : subscription.cancel_at_period_end,

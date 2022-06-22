@@ -15,7 +15,19 @@ module.exports = (sequelize, Sequelize) => {
       application_fee_percent :{
         type: Sequelize.STRING,
       },
+      created:{
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
       billing_cycle_anchor:{
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
+      current_period_end:{
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
+      current_period_start:{
         allowNull: false,
         type: Sequelize.STRING,
       },

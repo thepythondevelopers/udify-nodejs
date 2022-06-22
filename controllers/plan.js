@@ -3,7 +3,7 @@ const db = require("../models");
 const Plan = db.plan;
 const Op = db.Sequelize.Op;
 const {validationResult} = require("express-validator");
-
+const moment= require('moment')
 
 exports.createPlan = async (req,res)=>{
   const errors = validationResult(req);
@@ -132,4 +132,18 @@ exports.inactivePlan = async (req,res)=>{
         err.message || "Some error occurred while updating Integration."
     });
   });
+}
+
+
+exports.test = async (req,res)=>{
+  
+
+  
+  var utcStart = moment().unix();
+  const myDate = moment.unix(1653410499).utc().format('DD/MM/YYYY H:m:s A')
+    return res.json(myDate);
+  const subscription = await stripe.subscriptions.retrieve(
+    'sub_1L30nfKBofR9uVRpzQKzAlFK'
+  );
+  return res.json(subscription);
 }
