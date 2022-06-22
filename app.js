@@ -21,6 +21,7 @@ const plaidRoutes = require("./routes/plaid");
 const userRoutes = require("./routes/user");
 const shopifyProductRoutes = require("./routes/shopify_product");
 const getInTouchRoutes = require("./routes/get_in_touch");
+const supportRoutes = require("./routes/support");
 const path = require("path");
 
 
@@ -70,7 +71,7 @@ app.use('/api',planRoutes);
 app.use('/api',stripeRoutes);
 app.use('/api',adminUser);
 app.use('/api',getInTouchRoutes);
-
+app.use('/api',supportRoutes);
 const db = require("./models");
 
 

@@ -27,9 +27,20 @@ db.account = require("./accounts.js")(sequelize, Sequelize);
 db.setting = require("./setting.js")(sequelize, Sequelize);
 db.integration = require("./integration.js")(sequelize, Sequelize);
 db.user = require("./user.js")(sequelize, Sequelize);
+db.support = require("./support.js")(sequelize, Sequelize);
+
+
 
 db.product.hasMany(db.productVariant,{ foreignKey: 'product_id', sourceKey: 'id'});
 db.user.hasOne(db.account,{ foreignKey: 'public_id', sourceKey: 'guid'});
+db.support.hasOne(db.user,{ foreignKey: 'guid', sourceKey: 'user_id'});
+db.support.hasMany(db.account,{ foreignKey: 'public_id', sourceKey: 'user_id'});
+db.support.hasMany(db.support, {
+  as: 'reply',
+  foreignKey: 'parent_id',
+  sourceKey: 'id',
+  useJunctionTable: false
+})
 //db.account.hasMany(db.setting);
 //db.setting.belongsTo(db.account);
 // db.integration.belongsTo(db.account);
