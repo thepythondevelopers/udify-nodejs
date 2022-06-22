@@ -32,6 +32,7 @@ module.exports = (sequelize, Sequelize) => {
       status: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 0
       },     
       created_at :{
         allowNull: false,
