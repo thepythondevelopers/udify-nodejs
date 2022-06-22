@@ -51,10 +51,7 @@ exports.updatePlan = async (req,res)=>{
       })
   }  
   const product = await stripe.products.update(app_id, {
-    name: req.body.name,
-    default_price_data: {
-      unit_amount: req.body.price*100
-    }
+    name: req.body.name
   });
 
   data = {

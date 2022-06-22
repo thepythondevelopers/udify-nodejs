@@ -16,7 +16,6 @@ router.post("/create-plan",verifyToken,adminroleCheck,[
     check("features").notEmpty()
 ],createPlan);
 router.post("/update-plan/:app_id",verifyToken,adminroleCheck,[
-    check("price").notEmpty(),
     check("name").notEmpty(),
     check("type").notEmpty(),
     check("features").notEmpty()
