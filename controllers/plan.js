@@ -83,7 +83,7 @@ exports.getPlan = (req,res)=>{
     
     Plan.findAll({
       where: {
-          status: 0}
+          status: 1}
     }).then(data => {
         res.json(data);
       })
@@ -98,7 +98,7 @@ exports.getPlan = (req,res)=>{
 exports.activePlan = (req,res)=>{
   const app_id = req.params.app_id;    
   Plan.update(
-    {status:0},
+    {status:1},
     { where: { app_id: app_id}
    }
   )
@@ -116,7 +116,7 @@ exports.inactivePlan = async (req,res)=>{
   const app_id = req.params.app_id;    
    
   Plan.update(
-    {status:1},
+    {status:0},
     { where: { app_id: "prod_LutpoZhen4avJU"}
    }
   )
