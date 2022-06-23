@@ -65,6 +65,11 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING(),
         allowNull: false,
       },
+      check_status:{
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
       latest_invoice_payment_intent_status: {
         type: Sequelize.STRING(),
         allowNull: false,

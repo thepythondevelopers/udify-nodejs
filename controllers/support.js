@@ -115,7 +115,17 @@ exports.getTicket = (req, res) => {
 exports.getAllTicket = (req,res)=>{
   Support.findAll({ where: {
     user_id : req.user.id
-    }
+    },
+    include: [
+    {
+      model: User,
+      attributes: [ 'first_name', 'last_name', 'email']
+  },
+  {
+    model: Account,
+    attributes: [ 'avatar']
+  }
+  ]
  })
   .then(data => {   
     res.send(data);
@@ -129,7 +139,18 @@ exports.getAllTicket = (req,res)=>{
 }
 
 exports.getAllTicketAdmin = (req,res)=>{
-  Support.findAll()
+  Support.findAll({
+    include: [
+      {
+        model: User,
+        attributes: [ 'first_name', 'last_name', 'email']
+    },
+    {
+      model: Account,
+      attributes: [ 'avatar']
+    }
+    ]
+  })
   .then(data => {   
     res.send(data);
   })
