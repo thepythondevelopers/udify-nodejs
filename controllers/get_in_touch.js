@@ -104,7 +104,7 @@ function getInTouch_email(req) {
     </body>
     </html>`;
     return {
-      to: 'parminderwalia007@gmail.com',
+      to: 'admin@yopmail.com',
       from: process.env.SENDGRID_FROM_ADDRESS,
       subject: 'Get In Touch',
       text: body,
