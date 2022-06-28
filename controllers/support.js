@@ -50,7 +50,9 @@ exports.createSupport = async (req,res)=>{
   await Support
       .create(content)
   .then(data => {
-    res.send({message:"Support Ticket Generated Successfully"});
+    res.send({message:"Support Ticket Generated Successfully",
+    ticket_id : guid
+  });
   })
   .catch(err => {
     res.status(500).send({
