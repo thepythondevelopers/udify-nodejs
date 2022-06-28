@@ -105,7 +105,7 @@ exports.signin = (req,res) =>{
       if (result == true) {
           //create token
           
-        var token = jwt.sign({ id: user.guid, access_group: user.access_group }, process.env.SECRET,{ expiresIn: '1d'  });
+        var token = jwt.sign({ id: user.guid, access_group: user.access_group,email:user.email }, process.env.SECRET,{ expiresIn: '1d'  });
         guid = uuidv4();
         guid = guid.replace(/-/g,"");
         user_token_data = {

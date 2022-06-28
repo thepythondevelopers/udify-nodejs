@@ -7,21 +7,44 @@ const {validationResult} = require("express-validator");
 const { v4: uuidv4 } = require('uuid');
 
 exports.createSupport = async (req,res)=>{
-  const errors = validationResult(req);
-  if(!errors.isEmpty()){
-      return res.status(402).json({
-          error : errors.array()
-      })
+  
+  
+  if(req.files!=null){
+    files = req.files;
+    array_file =[];
+    for(const file of files) {
+      //return res.json(file);
+      array_file.push(file.filename);
+    }
+    array_file = JSON.stringify(array_file);
+    
+  }else{
+    
+    array_file = null;
   }
+  
+  // const errors = validationResult(req);
+  // if(!errors.isEmpty()){
+  //     return res.status(402).json({
+  //         error : errors.array()
+  //     })
+  // }
+  email = req.user!=null ? req.user.email : req.body.email;
+  
+  user_id  = req.user!=null ? req.user.id : '';
   guid = uuidv4();
   guid = guid.replace(/-/g,""); 
   content =  {  
     id : guid,
-    user_id : req.user.id,
+    user_id : user_id,
     parent_id : 0,
     message : req.body.message,
+    name : req.body.name,
+    subject : req.body.subject,
+    email : email,
     user_read : 1,
-    admin_read : 1
+    admin_read : 1,
+    file : array_file
   }
   
   await Support
@@ -40,17 +63,17 @@ exports.createSupport = async (req,res)=>{
 exports.replyTicketSupport = async (req,res)=>{
   parent_id = req.params.parent_id;
   const errors = validationResult(req);
-  if(!errors.isEmpty()){
-      return res.status(402).json({
-          error : errors.array()
-      })
-  }
+  // if(!errors.isEmpty()){
+  //     return res.status(402).json({
+  //         error : errors.array()
+  //     })
+  // }
   guid = uuidv4();
   guid = guid.replace(/-/g,""); 
   content =  {  
     id : guid,
     user_id : req.user.id,
-    parent_id : req.body.parent_id,
+    parent_id : parent_id,
     message : req.body.message,
     user_read : 1,
     admin_read : 1

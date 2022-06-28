@@ -31,6 +31,8 @@ app.use(express.static('uploads/avatar'));
 app.use('/uploads/avatar', express.static('uploads/avatar'));
 app.use(express.static('uploads/email')); 
 app.use('/uploads/email', express.static('uploads/email'));
+app.use(express.static('uploads/support')); 
+app.use('/uploads/support', express.static('uploads/support'));
 
 
 

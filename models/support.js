@@ -7,18 +7,34 @@ module.exports = (sequelize, Sequelize) => {
       },
       user_id: {
         type: Sequelize.CHAR(32),
-        required : true,
-        allowNull: false
+        
       },
       parent_id :{
         type: Sequelize.CHAR(32),
         required : true,
         allowNull: false  
       },
+      name: {
+        type: Sequelize.STRING()
+      },
+      subject: {
+        type: Sequelize.STRING(),
+      },
+      email: {
+        type: Sequelize.STRING(),
+      },
       message:{
         type: Sequelize.TEXT(),
         required : true,
         allowNull: false,
+      },
+      status: {
+        type: Sequelize.STRING(),
+        allowNull: false,
+        defaultValue: 'New'
+      },
+      file: {
+        type: Sequelize.TEXT('long')
       },
       admin_read:{
         type: Sequelize.INTEGER(),
