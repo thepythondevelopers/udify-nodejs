@@ -5,7 +5,7 @@ const db = require("../models");
 const User = db.user;
 var multer = require('multer');
 
-const {createSupport,replyTicketSupport,getTicket,getAllTicket,getAllTicketAdmin,getTicketNotificationUser,getTicketNotificationAdmin,readNotificationUser,readNotificationAdmin} = require("../controllers/support");
+const {createSupport,replyTicketSupport,getTicket,getAllTicket,getAllTicketAdmin,getTicketNotificationUser,getTicketNotificationAdmin,readNotificationUser,readNotificationAdmin,replyTicketSupportUser,forgotTicketId} = require("../controllers/support");
 const {verifyToken,isAccountCheck,adminroleCheck} = require("../controllers/auth");
 
 const storage = multer.diskStorage({
@@ -43,10 +43,21 @@ router.post("/create-support-without",[
     check("message").notEmpty()
 ],upload.array('attachment'),createSupport);
 
-router.post("/reply-support-ticket/:parent_id",verifyToken,[
-    check("message").notEmpty()
+router.post("/reply-support-ticket/:parent_id",verifyToken,adminroleCheck,[
+    check("message").notEmpty(),
+    check("status").notEmpty()
 ],upload.array('attachment'),replyTicketSupport);
-router.post("/get-ticket/:id",verifyToken,getTicket);
+router.post("/reply-support-ticket-user/:parent_id",[
+  check("message").notEmpty(),
+  check("status").notEmpty()
+],upload.array('attachment'),replyTicketSupportUser);
+
+router.post("/get-ticket/:id",getTicket);
+router.post("/forgot-ticket-id",[
+  check("email").isEmail().notEmpty(),
+  check("status").notEmpty()
+],forgotTicketId);
+
 router.post("/get-all-ticket",verifyToken,getAllTicket);
 router.post("/get-all-ticket-admin",verifyToken,adminroleCheck,getAllTicketAdmin);
 router.post("/get-ticket-notification-admin",verifyToken,adminroleCheck,getTicketNotificationAdmin);
