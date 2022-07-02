@@ -48,7 +48,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       category: {
         type: Sequelize.STRING(),
-        allowNull: false
+        allowNull: true
       },
       closed_by: {
         type: Sequelize.STRING(),
