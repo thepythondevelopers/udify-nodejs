@@ -168,8 +168,12 @@ exports.getTicket = (req, res) => {
 ],
    })
     .then(data => {
+      if(data===null){
+        res.json({message:"No Ticket Found."})
+      }else{
+        res.send(data);
+      }
       
-      res.send(data);
     })
     .catch(err => {
       res.status(500).send({
