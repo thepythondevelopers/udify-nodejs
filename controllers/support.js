@@ -118,7 +118,7 @@ exports.replyTicketSupportUser = async (req,res)=>{
   guid = guid.replace(/-/g,""); 
   content =  {  
     id : guid,
-    user_id : req.user.id,
+    user_id : '',
     parent_id : parent_id,
     message : req.body.message,
     
