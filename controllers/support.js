@@ -121,7 +121,7 @@ exports.replyTicketSupportUser = async (req,res)=>{
     user_id : '',
     parent_id : parent_id,
     message : req.body.message,
-    
+    status : req.body.status,
     user_read : 1,
     admin_read : 1
   }
