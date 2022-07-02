@@ -5,7 +5,7 @@ const db = require("../models");
 const User = db.user;
 var multer = require('multer');
 
-const {createSupport,replyTicketSupport,getTicket,getAllTicket,getAllTicketAdmin,getTicketNotificationUser,getTicketNotificationAdmin,readNotificationUser,readNotificationAdmin,replyTicketSupportUser,forgotTicketId} = require("../controllers/support");
+const {createSupport,replyTicketSupport,getTicket,getAllTicket,getAllTicketAdmin,getTicketNotificationUser,getTicketNotificationAdmin,readNotificationUser,readNotificationAdmin,replyTicketSupportUser,forgotTicketId,ticketClosed} = require("../controllers/support");
 const {verifyToken,isAccountCheck,adminroleCheck} = require("../controllers/auth");
 
 const storage = multer.diskStorage({
@@ -65,6 +65,6 @@ router.post("/get-ticket-notification-user",verifyToken,getTicketNotificationUse
 router.post("/read-ticket-notification-user/:id",verifyToken,readNotificationUser);
 router.post("/read-ticket-notification-admin/:id",verifyToken,adminroleCheck,readNotificationAdmin);
 
-
+router.post("/ticket-closed/:id",ticketClosed);
 
 module.exports = router;

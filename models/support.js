@@ -46,6 +46,18 @@ module.exports = (sequelize, Sequelize) => {
         required : true,
         allowNull: false
       },
+      category: {
+        type: Sequelize.STRING(),
+        allowNull: false
+      },
+      closed_by: {
+        type: Sequelize.STRING(),
+        allowNull: true
+      },
+      closed_at: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
       created_at :{
         allowNull: false,
         type: Sequelize.DATE,

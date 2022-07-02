@@ -46,7 +46,8 @@ exports.createSupport = async (req,res)=>{
     email : email,
     user_read : 1,
     admin_read : 1,
-    file : array_file
+    file : array_file,
+    category : req.body.category
   }
   
   await Support
@@ -290,6 +291,30 @@ exports.readNotificationUser = (req,res)=>{
   )
   .then(data => {
     res.send({message : "Notification Read"});
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while updating Integration."
+    });
+  });   
+}
+
+exports.ticketClosed = (req,res)=>{
+  const id = req.params.id;
+  closed_by = req.closed_by!=null ? req.closed_by : 'user';
+  Support.update(
+    {closed_by : closed_by,closed_at:Date.now(),status:'Closed'},
+    { where: { id: req.params.id,status: {[Op.not]:'Closed'} } }
+  )
+  .then(data => {
+    
+    if(data==0){
+      res.send({message : "Either Ticket is not found or it's status is closed."});  
+    }else{
+      res.send({message : "Ticket Closed Successfully."});
+    }
+    
   })
   .catch(err => {
     res.status(500).send({
