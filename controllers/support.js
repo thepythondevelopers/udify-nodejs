@@ -302,7 +302,7 @@ exports.readNotificationUser = (req,res)=>{
 
 exports.ticketStatusChange = (req,res)=>{
   const id = req.params.parent_id;
-  closed_by = req.closed_by!=null ? req.closed_by : 'user';
+  closed_by = req.body.closed_by!=null ? req.body.closed_by : 'user';
   
   Support.update(
     {status_by : closed_by,status_at:Date.now(),status:req.body.status},
@@ -313,7 +313,7 @@ exports.ticketStatusChange = (req,res)=>{
     if(data==0){
       res.send({message : "Either Ticket is not found or it's status is closed."});  
     }else{
-      res.send({message : "Ticket Closed Successfully."});
+      res.send({message : "Ticket Status Change Successfully."});
     }
     
   })
