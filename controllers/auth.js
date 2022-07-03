@@ -6,9 +6,10 @@ var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var jwt = require('jsonwebtoken');
 const { json } = require("body-parser");
-const { integration } = require("../models");
+const { integration, support } = require("../models");
 require('dotenv').config();
 const UserToken = db.userToken;
+const Support = db.support;
 const Op = db.Sequelize.Op;
 var pluck = require('arr-pluck');
 // Protected Routes
@@ -122,5 +123,26 @@ exports.adminroleCheck = (req,res,next) =>{
           err  : "Does't Not have permission."
       })
   }  
+  next();
+}
+
+exports.ticketStatusCheck = async (req,res,next) =>{
+  parent_id = req.params.parent_id;
+  support_data = await Support.findOne({ where: {id :parent_id }}); 
+  
+  if(support_data!=null && support_data.status=='Closed'){
+   return res.json({message:"Ticket Already Closed"})
+  }
+  next();
+}
+
+exports.checkPlanForStripePayment = async (req,res,next) =>{
+  id = req.body.public_id;
+  
+  user_data = await User.findOne({ where: {guid :id }}); 
+    
+  if(user_data!=null && user_data.plan_status!='trial'){
+   return res.json({message:"Already Purchased the Plan."})
+  }
   next();
 }

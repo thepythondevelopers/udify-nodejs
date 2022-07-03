@@ -6,7 +6,7 @@ const User = db.user;
 var multer = require('multer');
 
 const {createSupport,replyTicketSupport,getTicket,getAllTicket,getAllTicketAdmin,getTicketNotificationUser,getTicketNotificationAdmin,readNotificationUser,readNotificationAdmin,replyTicketSupportUser,forgotTicketId,ticketClosed} = require("../controllers/support");
-const {verifyToken,isAccountCheck,adminroleCheck} = require("../controllers/auth");
+const {verifyToken,isAccountCheck,adminroleCheck,ticketStatusCheck} = require("../controllers/auth");
 
 const storage = multer.diskStorage({
     destination: function(req,file,cb){
@@ -43,13 +43,11 @@ router.post("/create-support-without",[
     check("message").notEmpty()
 ],upload.array('attachment'),createSupport);
 
-router.post("/reply-support-ticket/:parent_id",verifyToken,adminroleCheck,[
+router.post("/reply-support-ticket/:parent_id",verifyToken,adminroleCheck,ticketStatusCheck,[
     check("message").notEmpty(),
-    check("status").notEmpty()
 ],upload.array('attachment'),replyTicketSupport);
-router.post("/reply-support-ticket-user/:parent_id",[
+router.post("/reply-support-ticket-user/:parent_id",ticketStatusCheck,[
   check("message").notEmpty(),
-  check("status").notEmpty()
 ],upload.array('attachment'),replyTicketSupportUser);
 
 router.post("/get-ticket/:id",getTicket);
@@ -65,6 +63,6 @@ router.post("/get-ticket-notification-user",verifyToken,getTicketNotificationUse
 router.post("/read-ticket-notification-user/:id",verifyToken,readNotificationUser);
 router.post("/read-ticket-notification-admin/:id",verifyToken,adminroleCheck,readNotificationAdmin);
 
-router.post("/ticket-closed/:id",ticketClosed);
+router.post("/ticket-closed/:parent_id",ticketStatusCheck,ticketClosed);
 
 module.exports = router;

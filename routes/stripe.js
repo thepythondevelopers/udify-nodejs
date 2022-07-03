@@ -5,10 +5,10 @@ const db = require("../models");
 const User = db.user;
 
 const {stripeSubscription} = require("../controllers/stripe");
-const {verifyToken,isAccountCheck,roleCheck} = require("../controllers/auth");
+const {verifyToken,isAccountCheck,roleCheck,checkPlanForStripePayment} = require("../controllers/auth");
 
 
-router.post("/stripe",verifyToken,[
+router.post("/stripe",verifyToken,checkPlanForStripePayment,[
     check("number").notEmpty(),
     check("exp_month").notEmpty(),
     check("exp_year").notEmpty(),

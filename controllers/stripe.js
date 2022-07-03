@@ -15,15 +15,13 @@ const stripe = require('stripe')(process.env.STRIPE_KEY);
 
 
 exports.stripeSubscription = async (req,res)=>{
-  //return res.json(req.body);
+  
   card =  {
     number: req.body.number,
     exp_month: req.body.exp_month,
     exp_year: req.body.exp_year,
     cvc: req.body.cvc,
   }
-
-  
 
   await stripe.paymentMethods.create({
       type: 'card',

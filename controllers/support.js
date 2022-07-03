@@ -91,7 +91,7 @@ exports.replyTicketSupport = async (req,res)=>{
     user_id : req.user.id,
     parent_id : parent_id,
     message : req.body.message,
-    status : req.body.status,
+    //status : req.body.status,
     user_read : 1,
     admin_read : 1
   }
@@ -301,11 +301,11 @@ exports.readNotificationUser = (req,res)=>{
 }
 
 exports.ticketClosed = (req,res)=>{
-  const id = req.params.id;
+  const id = req.params.parent_id;
   closed_by = req.closed_by!=null ? req.closed_by : 'user';
   Support.update(
     {closed_by : closed_by,closed_at:Date.now(),status:'Closed'},
-    { where: { id: req.params.id,status: {[Op.not]:'Closed'} } }
+    { where: { id: req.params.parent_id,status: {[Op.not]:'Closed'} } }
   )
   .then(data => {
     
