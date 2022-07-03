@@ -3,7 +3,7 @@ var router = express.Router()
 const { check} = require("express-validator");
 
 
-const {createBase,updateBase,getBase,destroyBase} = require("../controllers/knowledgebase");
+const {createBase,updateBase,getBase,destroyBase,getBaseById} = require("../controllers/knowledgebase");
 const {verifyToken,adminroleCheck} = require("../controllers/auth");
 
 
@@ -19,5 +19,7 @@ router.post("/update-base/:id",verifyToken,adminroleCheck,[
 ],updateBase);
 router.post("/destroy-base/:id",verifyToken,adminroleCheck,destroyBase);
 router.post("/get-base",getBase);
+router.post("/get-base-id/:id",getBaseById);
+
 
 module.exports = router;

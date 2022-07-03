@@ -92,3 +92,22 @@ exports.destroyBase = (req,res)=>{
     });
 }
 
+exports.getBaseById = (req, res) => {
+  Knowledgebase.findOne({ where: {
+      id : req.params.id
+  }})
+    .then(data => {
+      if(data===null){
+        res.json({message:"No Data Found."})
+      }else{
+        res.send(data);
+      }
+      
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving."
+      });
+    });
+};
