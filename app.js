@@ -23,6 +23,7 @@ const shopifyProductRoutes = require("./routes/shopify_product");
 const getInTouchRoutes = require("./routes/get_in_touch");
 const supportRoutes = require("./routes/support");
 const cmsPageRoutes = require("./routes/cms_pages");
+const knowledgebaseRoutes = require("./routes/knowledgebase");
 const path = require("path");
 
 
@@ -76,6 +77,7 @@ app.use('/api',adminUser);
 app.use('/api',getInTouchRoutes);
 app.use('/api',supportRoutes);
 app.use('/api',cmsPageRoutes);
+app.use('/api',knowledgebaseRoutes);
 
 const db = require("./models");
 

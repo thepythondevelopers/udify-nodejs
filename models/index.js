@@ -29,6 +29,7 @@ db.integration = require("./integration.js")(sequelize, Sequelize);
 db.user = require("./user.js")(sequelize, Sequelize);
 db.support = require("./support.js")(sequelize, Sequelize);
 db.cms_pages = require("./cms_pages.js")(sequelize, Sequelize);
+db.knowledgebase = require("./knowledgebase.js")(sequelize, Sequelize);
 
 
 db.product.hasMany(db.productVariant,{ foreignKey: 'product_id', sourceKey: 'id'});
