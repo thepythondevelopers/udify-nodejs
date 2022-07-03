@@ -300,11 +300,12 @@ exports.readNotificationUser = (req,res)=>{
   });   
 }
 
-exports.ticketClosed = (req,res)=>{
+exports.ticketStatusChange = (req,res)=>{
   const id = req.params.parent_id;
   closed_by = req.closed_by!=null ? req.closed_by : 'user';
+  
   Support.update(
-    {closed_by : closed_by,closed_at:Date.now(),status:'Closed'},
+    {status_by : closed_by,status_at:Date.now(),status:req.body.status},
     { where: { id: req.params.parent_id,status: {[Op.not]:'Closed'} } }
   )
   .then(data => {

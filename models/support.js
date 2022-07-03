@@ -50,11 +50,11 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING(),
         allowNull: true
       },
-      closed_by: {
+      status_by: {
         type: Sequelize.STRING(),
         allowNull: true
       },
-      closed_at: {
+      status_at: {
         type: Sequelize.DATE,
         allowNull: true
       },
