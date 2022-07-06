@@ -6,7 +6,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const redis = require('redis');
+
 
 //Routes
 const adminUser = require("./routes/admin/user");
@@ -42,18 +42,6 @@ app.use('/uploads/support', express.static('uploads/support'));
 
 
 
-//Redis Implementation
-// const client = redis.createClient({ url: 'rediss://default:AVNS_H1ldRswWtOxMWL-@udify-redis-do-user-4912141-0.b.db.ondigitalocean.com:25061'});
-
-//   client.on('error', (err) => console.log('Redis Client Error', err)); 
-
-  //client.set('key', 'value255');
-  //const value =  client.get('key');
-  
-  // client.get("key", function(err, reply) {
-  //   // reply is null when the key is missing
-  //   console.log(reply);
-  // });
 
 const port = process.env.PORT || 8000;
 
