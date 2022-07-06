@@ -188,7 +188,7 @@ exports.getTicket = (req, res) => {
 exports.getAllTicket = (req,res)=>{
   Support.findAll({ where: {
     user_id : req.user.id,
-    parent_id : 0
+    parent_id : "0"
     },
     include: [
     {
@@ -215,7 +215,7 @@ exports.getAllTicket = (req,res)=>{
 exports.getAllTicketAdmin = (req,res)=>{
   Support.findAll({
     where: {
-      parent_id : 0
+      parent_id : "0"
       },
     include: [
       {
