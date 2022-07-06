@@ -3,7 +3,7 @@ var router = express.Router()
 const { check} = require("express-validator");
 
 const {getUsers,getUser,getUserToken,disableUser,enableUser} = require("../../controllers/admin/user");
-const {verifyToken,isAccountCheck,adminroleCheck} = require("../../controllers/auth");
+const {verifyToken,isAccountCheck,adminroleCheck} = require("../../middleware/auth");
 
 
 router.post("/admin/user",verifyToken,adminroleCheck,getUsers);

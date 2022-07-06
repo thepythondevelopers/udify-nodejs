@@ -12,9 +12,9 @@ const redis = require('redis');
 const adminUser = require("./routes/admin/user");
 const stripeRoutes = require("./routes/stripe");
 const planRoutes = require("./routes/plan");
-const syncOrderShopifyRoutes = require("./routes/order_sync");
+const OrderShopifyRoutes = require("./routes/order");
 const syncShopifyRoutes = require("./routes/sync_shopify");
-const shopifyRoutes = require("./routes/shopify");
+const productRoutes = require("./routes/product");
 const accountRoutes = require("./routes/account");
 const integrationRoutes = require("./routes/integration");
 const plaidRoutes = require("./routes/plaid");
@@ -24,6 +24,8 @@ const getInTouchRoutes = require("./routes/get_in_touch");
 const supportRoutes = require("./routes/support");
 const cmsPageRoutes = require("./routes/cms_pages");
 const knowledgebaseRoutes = require("./routes/knowledgebase");
+const customerRoutes = require("./routes/customer");
+const profileRoutes = require("./routes/profile");
 const path = require("path");
 
 
@@ -63,21 +65,23 @@ app.use(cors());
 
 //My Routes
 
-app.use('/api/shopify',shopifyRoutes);
+app.use('/product-node',productRoutes);
 app.use('/api',accountRoutes);
-app.use('/api',integrationRoutes);
+app.use('/integration-node',integrationRoutes);
 app.use('/api',plaidRoutes);
-app.use('/api',userRoutes);
-app.use('/api',syncShopifyRoutes);
-app.use('/api',syncOrderShopifyRoutes);
-app.use('/api',shopifyProductRoutes);
-app.use('/api',planRoutes);
-app.use('/api',stripeRoutes);
-app.use('/api',adminUser);
-app.use('/api',getInTouchRoutes);
-app.use('/api',supportRoutes);
-app.use('/api',cmsPageRoutes);
-app.use('/api',knowledgebaseRoutes);
+app.use('/user-authenticate-node',userRoutes);
+app.use('/shopify-sync-node',syncShopifyRoutes);
+app.use('/order-node',OrderShopifyRoutes);
+app.use('/product-node',shopifyProductRoutes);
+app.use('/stripe-node',planRoutes);
+app.use('/stripe-node',stripeRoutes);
+app.use('/admin-node',adminUser);
+app.use('/get-in-touch-node',getInTouchRoutes);
+app.use('/support-node',supportRoutes);
+app.use('/cms-node',cmsPageRoutes);
+app.use('/knowledgebase-node',knowledgebaseRoutes);
+app.use('/customer-node',customerRoutes);
+app.use('/profile-node',profileRoutes);
 
 const db = require("./models");
 

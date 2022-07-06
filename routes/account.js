@@ -2,7 +2,7 @@ var express = require('express')
 var router = express.Router()
 const { check} = require("express-validator");
 const {findAccount,findAllAccount,updateAccount,deleteAccount} = require("../controllers/account");
-const {verifyToken,isAccountCheck,roleCheck} = require("../controllers/auth");
+const {verifyToken,isAccountCheck,roleCheck} = require("../middleware/auth");
 
 
 

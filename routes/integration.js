@@ -4,7 +4,7 @@ const { check} = require("express-validator");
 
 const {createIntegration,findIntegration,findAllIntegration,updateIntegration,deleteIntegration} = require("../controllers/integration");
 
-const {verifyToken,isAccountCheck,roleCheck} = require("../controllers/auth");
+const {verifyToken,isAccountCheck,roleCheck} = require("../middleware/auth");
 
 router.post("/create-integration",verifyToken,isAccountCheck,[
     check("store_api_key").isLength({max : 32}).notEmpty(),

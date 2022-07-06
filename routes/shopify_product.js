@@ -4,7 +4,7 @@ const { check} = require("express-validator");
 
 
 const {productImageAdd,productImageDelete,productVariationAdd,productVariationUpdate,productVariationDelete} = require("../controllers/shopify_product");
-const {verifyToken,isAccountCheck,roleCheck} = require("../controllers/auth");
+const {verifyToken,isAccountCheck,roleCheck} = require("../middleware/auth");
 
 
 router.post("/shopfiy-product-image-delete/:store_id/:product_id/:image_id",verifyToken,productImageDelete);

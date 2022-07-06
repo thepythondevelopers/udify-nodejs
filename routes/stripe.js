@@ -5,7 +5,7 @@ const db = require("../models");
 const User = db.user;
 
 const {stripeSubscription} = require("../controllers/stripe");
-const {verifyToken,isAccountCheck,roleCheck,checkPlanForStripePayment} = require("../controllers/auth");
+const {verifyToken,isAccountCheck,roleCheck,checkPlanForStripePayment} = require("../middleware/auth");
 
 
 router.post("/stripe",verifyToken,checkPlanForStripePayment,[

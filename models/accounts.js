@@ -19,15 +19,10 @@ module.exports = (sequelize, Sequelize) => {
       },
       name:{
         type: Sequelize.STRING,
-      //  required: true,
-        trim: true,
-       // required : true,
-       // allowNull: false,
+        trim: true
       },
       api_token:{
-        type: Sequelize.CHAR(32),
-       // required : true,
-       // allowNull: false,
+        type: Sequelize.CHAR(32)
       },
       public_id:{
         type: Sequelize.CHAR(32),
@@ -35,29 +30,19 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
     },
 	address_street:{
-        type: Sequelize.STRING,
-        //required : true,
-        //allowNull: false,
+        type: Sequelize.STRING
     },
 	address_unit:{
-        type: Sequelize.STRING,
-        //required : true,
-       // allowNull: false,
+        type: Sequelize.STRING
     },
 	address_city:{
         type: Sequelize.STRING,
-        //required : true,
-       // allowNull: false,
     },
 	address_state:{
-        type: Sequelize.CHAR(2),
-        //required : true,
-        //allowNull: false,
+        type: Sequelize.CHAR(2)
     },
 	address_zip:{
-        type: Sequelize.STRING,
-        //required : true,
-        //allowNull: false,
+        type: Sequelize.STRING
     },
 	address_country:{
         type: Sequelize.CHAR(2),
@@ -76,10 +61,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.TEXT()
     },
     avatar:{
-      type: Sequelize.STRING(),
-      // get() {
-      //     return 'https://udifyapi.pamsar.com/uploads/avatar/'+this.getDataValue('avatar') 
-      //   }
+      type: Sequelize.STRING()
     },
     company:{
       type: Sequelize.STRING()

@@ -2,7 +2,7 @@ var express = require('express')
 var router = express.Router()
 const { check} = require("express-validator");
 const {create_update_cms,getAllCmsPages,getCmsPage,getAdminCmsPage} = require("../controllers/cms_pages");
-const {verifyToken,isAccountCheck,adminroleCheck,getCmsPages} = require("../controllers/auth");
+const {verifyToken,isAccountCheck,adminroleCheck,getCmsPages} = require("../middleware/auth");
 
 
 router.post("/create-update-cms",verifyToken,adminroleCheck,[

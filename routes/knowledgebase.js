@@ -4,7 +4,7 @@ const { check} = require("express-validator");
 
 
 const {createBase,updateBase,getBase,destroyBase,getBaseById} = require("../controllers/knowledgebase");
-const {verifyToken,adminroleCheck} = require("../controllers/auth");
+const {verifyToken,adminroleCheck} = require("../middleware/auth");
 
 
 router.post("/create-base",verifyToken,adminroleCheck,[

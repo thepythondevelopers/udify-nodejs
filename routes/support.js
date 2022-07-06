@@ -6,7 +6,7 @@ const User = db.user;
 var multer = require('multer');
 
 const {createSupport,replyTicketSupport,getTicket,getAllTicket,getAllTicketAdmin,getTicketNotificationUser,getTicketNotificationAdmin,readNotificationUser,readNotificationAdmin,replyTicketSupportUser,forgotTicketId,ticketStatusChange} = require("../controllers/support");
-const {verifyToken,isAccountCheck,adminroleCheck,ticketStatusCheck} = require("../controllers/auth");
+const {verifyToken,isAccountCheck,adminroleCheck,ticketStatusCheck} = require("../middleware/auth");
 
 const storage = multer.diskStorage({
     destination: function(req,file,cb){

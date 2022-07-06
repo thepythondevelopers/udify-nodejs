@@ -1,16 +1,13 @@
 var express = require('express')
 var router = express.Router()
 const { check} = require("express-validator");
-const {getSingleProduct,getSingleCustomer,getProductAccordingtoStore,getCustomerAccordingtoStore,createCustomerShopify,deleteCustomerShopify,updateCustomerShopify,deleteProductShopify,createProductShopify,updateProductShopify,checkCustomerEmailExist,
-    checkCustomerPhoneExist} = require("../controllers/shopify");
-const {verifyToken,isAccountCheck,roleCheck,checkStoreId} = require("../controllers/auth");
+const {getSingleCustomer,getCustomerAccordingtoStore,createCustomerShopify,deleteCustomerShopify,updateCustomerShopify,checkCustomerEmailExist,
+    checkCustomerPhoneExist} = require("../controllers/customer");
+const {verifyToken,isAccountCheck,roleCheck,checkStoreId} = require("../middleware/auth");
 
 
-router.get("/get-single-shopify/:product_id",verifyToken,getSingleProduct);
+
 router.get("/get-single-customer/:customer_id",verifyToken,getSingleCustomer);
-
-
-router.post("/get-all-product-store",verifyToken,isAccountCheck,checkStoreId,getProductAccordingtoStore);
 
 router.post("/get-all-customer-store",verifyToken,isAccountCheck,checkStoreId,getCustomerAccordingtoStore);
 
@@ -40,10 +37,6 @@ router.post("/update-customer/:store_id/:customer_id",verifyToken,[
 
 router.post("/delete-shopify-customer/:store_id/:customer_id",verifyToken,deleteCustomerShopify);
 
-router.post("/create-product/:store_id",verifyToken,createProductShopify);
-router.post("/update-product/:store_id/:product_id",verifyToken,updateProductShopify);
-
-router.post("/delete-shopify-product/:store_id/:product_id",verifyToken,deleteProductShopify);
 
 router.post("/customer-check-email-exist/:store_id",verifyToken,checkCustomerEmailExist);
 router.post("/customer-check-phone-exist/:store_id",verifyToken,checkCustomerPhoneExist);
