@@ -1,128 +1,135 @@
-module.exports = (sequelize, Sequelize) => {
-    const Order = sequelize.define("orders", {
-        guid : {
-        type: Sequelize.CHAR(32),
-        primaryKey: true,
-      },
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const {ObjectId} = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
+var aggregatePaginate = require("mongoose-aggregate-paginate-v2");
+const OrderSchema = new Schema({
+    user:{
+        type : ObjectId,
+        ref: "User"
+    },
       store_id: {
-        allowNull: false,
-        type: Sequelize.CHAR(32),
-        allowNull: false,
+        type: String,
+        required : true
       },     
-      created_at :{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
-      },
-      updated_at:{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
-      },
       subtotal: {
-        allowNull: false,
-        type: Sequelize.STRING(45)
+        type: String,
+        required : true
       },
-      subtotal: {
-        allowNull: false,
-        type: Sequelize.STRING(20),
+      integration_id:{
+        type : ObjectId,
+        ref: "Integration"
       },
+    //   subtotal: {
+    //     type: String,
+    //     required : true
+    //   },
       total: {
-        allowNull: false,
-        type: Sequelize.STRING(20),
-      },
+        type: String,
+        required : true
+    },
+    created_at:{
+        type: Date
+    },
+    updated_at:{
+        type: Date
+    },
       closed_at: {
-        type: Sequelize.DATE
+        type: Date
       },
       shopify_order_id: {
-        allowNull: false,
-        type: Sequelize.STRING(30)
+        type: String,
+        required : true
       },
       note: {
-        type: Sequelize.STRING()
+        type: String
      },
      token: {
-        type: Sequelize.STRING(45)
+        type: String
     },
     gateway: {
-        type: Sequelize.STRING(45)
+        type: String
     },
     total_weight: {
-        type: Sequelize.INTEGER()  
+        type: Number  
     },
     total_tax: {
-        type: Sequelize.STRING(45)
+        type: String
     },
     taxes_included: {
-        type: Sequelize.BOOLEAN()
+        type: Boolean 
     },
     currency: {
-        type: Sequelize.STRING(3)
+        type: String
     },
     financial_status: {
-        type: Sequelize.STRING(45)
+        type: String
     },
     confirmed: {
-        type: Sequelize.BOOLEAN()
+        type: Boolean
     },
     total_discounts: {
-        type: Sequelize.STRING(45)
+        type: String
     },
     total_line_items_price: {
-        type: Sequelize.STRING(45)
+        type: String
     },
     cart_token: {
-        type: Sequelize.STRING(45)
+        type: String
     },
     name: {
-        type: Sequelize.STRING(45)
+        type: String
     },
     cancelled_at: {
-        type: Sequelize.DATE
+        type: Date
     },
     cancel_reason: {
-        type: Sequelize.STRING()
+        type: String
     },
     total_price_usd: {
-        type: Sequelize.STRING(45)
+        type: String
     },
     checkout_token: {
-        type: Sequelize.STRING(45)
+        type: String
     },
     processed_at: {
-        type: Sequelize.DATE
+        type: Date
     },
     device_id: {
-        type: Sequelize.STRING(45)
+        type: String
     },
     app_id: {
-        type: Sequelize.INTEGER()  
+        type: Number
     },
     browser_ip: {
-        type: Sequelize.STRING(60)
+        type: String
     },
     fulfillment_status: {
-        type: Sequelize.STRING(45)
+        type: String
     },
     order_status_url: {
-        type: Sequelize.STRING()
+        type: String
     },
     customer_id: {
-        type: Sequelize.STRING(30)
+        type: String
     },
     variant_ids: {
-        type: Sequelize.STRING(500)
+        type: String
     },
     product_ids: {
-        type: Sequelize.STRING(500)
+        type: String
+    },
+    line_items : {
+        type: Array
     },
     sys_updated_at: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')    
+        type: Date,
+        default: Date.now   
     }
 
-    },{
-      timestamps: false
-  });
-    return Order;
-  };
+    },{timestamps: true});
+   // OrderSchema.index({ name: 'text', total: 'text', subtotal: 'text' })
+    OrderSchema.plugin(aggregatePaginate);
+    OrderSchema.plugin(mongoosePaginate);
+    
+    module.exports = mongoose.model("Order",OrderSchema);

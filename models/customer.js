@@ -1,96 +1,91 @@
-module.exports = (sequelize, Sequelize) => {
-    const Customer = sequelize.define("customers", {
-      guid : {
-        type: Sequelize.CHAR(32),
-        primaryKey: true,
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
+const {ObjectId} = mongoose.Schema;
+const CustomerSchema = new Schema({      
+    user:{
+        type : ObjectId,
+        ref: "User"
+    },
+    store_id: {
+        type: String,
+        required : true
       },
-      store_id: {
-        allowNull: false,
-        type: Sequelize.CHAR(32),
-        allowNull: false,
-      },
+      created_at:{
+        type: Date
+    },
+    updated_at:{
+        type: Date
+    },
       first_name: {
-        type: Sequelize.STRING(45)
+        type: String
       },
       last_name: {
-        type: Sequelize.STRING(45)
+        type: String
       },     
-      created_at :{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
-      },
-      updated_at:{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
-      },
       accepts_marketing:{
-        type: Sequelize.BOOLEAN()
+        type: Boolean
       },
      email:{
-        type: Sequelize.STRING(80)
+        type: String
      },
     orders_count:{
-        type: Sequelize.INTEGER()
+        type: Number
     },
     total_spent:{
-        type: Sequelize.INTEGER()
+        type: Number
     },
     tax_exempt:{
-        type: Sequelize.BOOLEAN(),
-        defaultValue: 0
+        type: Boolean,
+        default: 0
     },
     shopify_id:{
-        type: Sequelize.STRING(20)
+        type: String
     },
     company:{
-        type: Sequelize.STRING(120)
+        type: String
     },
     address_line1:{ 
-        type: Sequelize.STRING()
+        type: String
     },
     address_line2:{
-        type: Sequelize.STRING()
+        type: String
     },
     city:{
-        type: Sequelize.STRING(60)
+        type: String
     },
     province:{
-        type: Sequelize.STRING(60)
+        type: String
     },
     country:{
-        type: Sequelize.STRING(120)
+        type: String
     },
     zip:{
-        type: Sequelize.STRING(20)
+        type: String
     },
     phone:{
-        type: Sequelize.STRING(20)
+        type: String
     },
     province_code:{
-        type: Sequelize.STRING(5)
+        type: String
     },
     country_code:{
-        type: Sequelize.STRING(5)
+        type: String
     },
     country_name:{
-        type: Sequelize.STRING(50)
+        type: String
     },
     default:{
-        type: Sequelize.BOOLEAN()
+        type: Boolean
     },
     state:{
-      type: Sequelize.STRING()
+      type: String
   },
     sys_updated_at:{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
+        type: Date,
+        default: Date.now
     } 
 
-    },{
-      timestamps: false
-  });
-    return Customer;
-  };
+    },{timestamps: true});
+    CustomerSchema.plugin(mongoosePaginate);
+    module.exports = mongoose.model("Customer",CustomerSchema);

@@ -1,38 +1,26 @@
-module.exports = (sequelize, Sequelize) => {
-    const CmsPage = sequelize.define("cms_pages", {
-      id : {
-          type: Sequelize.CHAR(32),
-          primaryKey: true,
-      },
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const CmsPageSchema = new Schema({
       type :{
-        allowNull: false,
-        type: Sequelize.STRING()
+        type: String,
+        required : true,
       },
       data :{
-        allowNull: false,
-        type: Sequelize.TEXT('long'),
-        set(value) {
-            const data = JSON.stringify(value);
-            this.setDataValue('data', data);
-          },
-          get() {
-            string_data = this.getDataValue('data');
-            return JSON.parse(string_data);
-          }
-      },
-      created_at :{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
-      },
-      updated_at:{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
+        type: String,
+        required : true,
+        set: stringify,
+        get : parse
       }
       
-    },{
-        timestamps: false
-    });
-    return CmsPage;
-  };
+    },{timestamps: true});
+
+
+  function stringify(value) {
+    return data = JSON.stringify(value);
+  }
+  function parse(value){
+    string_data = this.getDataValue('data');
+            return JSON.parse(string_data);
+  }
+
+module.exports = mongoose.model("CmsPage",CmsPageSchema);

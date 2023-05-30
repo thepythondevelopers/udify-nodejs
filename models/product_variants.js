@@ -1,104 +1,95 @@
-module.exports = (sequelize, Sequelize) => {
-    const ProductVariant = sequelize.define("product_variants", {
-      guid : {
-          type: Sequelize.CHAR(32),
-        primaryKey: true,
-      },
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const {ObjectId} = mongoose.Schema;
+const ProductVariantSchema = new Schema({        
       store_id:{
-        type: Sequelize.CHAR(32),
-        allowNull: false,
+        type: String,
+        required : true
       },
       product_id:{
-        type: Sequelize.CHAR(32),
+        type: String
       },
       barcode:{
-        type: Sequelize.STRING(50)
+        type: String
       },
       compare_at_price:{
-        type: Sequelize.STRING(20)
-      },
-      created_at:{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
+        type: String
       },
       fulfillment_service:{
-        type: Sequelize.STRING(20)
+        type: String
       },
       grams:{
-        type: Sequelize.INTEGER()
+        type: Number
       },
       weight:{
-        type: Sequelize.FLOAT()
+        type: Number
       },
       weight_unit:{
-        type: Sequelize.STRING(10)
+        type: String
       },
       id:{
-        type: Sequelize.STRING(30)
+        type: String
       },
       inventory_item_id:{
-        type: Sequelize.STRING(30)
+        type: String
       },
       inventory_management:{
-        type: Sequelize.STRING(20)
+        type: String
       },
       inventory_policy:{
-        type: Sequelize.STRING(40)
+        type: String
       },
       inventory_quantity:{
-        type: Sequelize.INTEGER()
+        type: Number
       },
       option1:{
-        type: Sequelize.STRING()
+        type: String
       },
       option2:{
-        type: Sequelize.STRING()
+        type: String
       },
       option3:{
-        type: Sequelize.STRING()
+        type: String
       },
       position:{
-        type: Sequelize.INTEGER()
+        type: Number
       },
       price:{
-        type: Sequelize.STRING(20)
+        type: String
       },
       presentment_prices:{
-        type: Sequelize.TEXT()
+        type: String
       },
       shopify_product_id:{
-        type: Sequelize.STRING(30)
+        type: String
       },
       requires_shipping:{
-        type: Sequelize.BOOLEAN()
+        type: Boolean
       },
       sku:{
-        type: Sequelize.STRING(30)
+        type: String
       },
       taxable:{
-        type: Sequelize.BOOLEAN()
+        type: Boolean
       },
       title:{
-        type: Sequelize.STRING()
-      },
-      updated_at:{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
+        type: String
       },
       image_id:{
-        type: Sequelize.STRING(30)
+        type: String
+      },
+      supplier_id:{
+        type : ObjectId,
+        ref: "User"
+    },
+      created_at:{
+        type: Date
       },
       sys_updated_at:{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
+        type: Date,
+        default: Date.now
       } 
       
-    },{
-      timestamps: false,
-  });
-    return ProductVariant;
-  };
+    },{timestamps: true});
 
+    module.exports = mongoose.model("ProductVariant",ProductVariantSchema);

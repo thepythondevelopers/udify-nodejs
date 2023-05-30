@@ -1,41 +1,18 @@
-
-module.exports = (sequelize, Sequelize) => {
-    const Knowledgebase = sequelize.define("knowledgebases", {
-      id : {
-          type: Sequelize.CHAR(32),
-        primaryKey: true,
-      },
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const KnowledgebaseSchema = new Schema({
       title: {
-        type: Sequelize.STRING(),
-        required : true,
-        allowNull: false,
+        type: String,
+        required : true
       },
       category: {
-        type: Sequelize.STRING(),
-        required : true,
-        allowNull: false,
+        type: String,
+        required : true
       },
       description: {
-        type: Sequelize.TEXT('long'),
-        required : true,
-        allowNull: false,
-      },
-      created_at :{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
-      },
-      updated_at:{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
-      },  
-    },{
-      timestamps: false
-  });
-    return Knowledgebase;
-  };
+        type: String,
+        required : true
+      } 
+    } ,{timestamps: true});
 
-	
-	
-	
+module.exports = mongoose.model("Knowledgebase",KnowledgebaseSchema);

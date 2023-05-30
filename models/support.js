@@ -1,79 +1,53 @@
-
-module.exports = (sequelize, Sequelize) => {
-    const supportToken = sequelize.define("supports", {
-      id : {
-          type: Sequelize.CHAR(32),
-        primaryKey: true,
-      },
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const {ObjectId} = mongoose.Schema;      
+const supportSchema = new Schema({         
       user_id: {
-        type: Sequelize.CHAR(32),
-        
+        type : ObjectId,
+        ref: "User"        
       },
       parent_id :{
-        type: Sequelize.CHAR(32),
-        required : true,
-        allowNull: false  
+        type : ObjectId,
+        ref: "Support"
       },
       name: {
-        type: Sequelize.STRING()
+        type: String
       },
       subject: {
-        type: Sequelize.STRING(),
+        type: String,
       },
       email: {
-        type: Sequelize.STRING(),
+        type: String,
       },
       message:{
-        type: Sequelize.TEXT(),
-        required : true,
-        allowNull: false,
+        type: String,
+        required : true
       },
       status: {
-        type: Sequelize.STRING(),
-        allowNull: false,
-        defaultValue: 'New'
+        type: String,
+        required : true,
+        default: 'New'
       },
       file: {
-        type: Sequelize.TEXT('long')
+        type: String
       },
       admin_read:{
-        type: Sequelize.INTEGER(),
-        required : true,
-        allowNull: false
+        type: Number,
+        required : true
       },
       user_read:{
-        type: Sequelize.INTEGER(),
-        required : true,
-        allowNull: false
+        type: Number,
+        required : true
       },
       category: {
-        type: Sequelize.STRING(),
-        allowNull: true
+        type: String,
       },
       status_by: {
-        type: Sequelize.STRING(),
-        allowNull: true
+        type: String,
       },
       status_at: {
-        type: Sequelize.DATE,
-        allowNull: true
-      },
-      created_at :{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
-      },
-      updated_at:{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
-      },  
-    },{
-      timestamps: false
-  });
-    return supportToken;
-  };
+        type: Date,
+      }  
+    },{timestamps: true});
 
-	
-	
-	
+    module.exports = mongoose.model("Support",supportSchema);

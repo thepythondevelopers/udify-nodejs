@@ -1,100 +1,74 @@
-const bcrypt = require("bcrypt");
-module.exports = (sequelize, Sequelize) => {
-    const User = sequelize.define("users", {
-      guid : {
-          type: Sequelize.CHAR(32),
-        primaryKey: true,
-      },     
-      created_at :{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
-      },
-      updated_at:{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
-      },
-      deleted_at:{
-        type: Sequelize.DATE
-      },
-      account_id:{
-        type: Sequelize.UUID,
-      references: {
-          model: 'accounts',
-          key: 'guid'
-      }
-      },
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const {ObjectId} = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
+const userSchema = new Schema({
+      
       first_name:{
-        type: Sequelize.STRING,
-        allowNull: false,
+        type: String,
+        required : true
       },
     last_name:{
-        type: Sequelize.STRING,
-        allowNull: false,
+        type: String,
+        required : true
     },
     email:{
-        type: Sequelize.STRING,
-        allowNull: false,
+        type: String,
+        required : true,
         unique: true
     },
     phone:{
-        type: Sequelize.STRING(45),
-        allowNull: true,
+        type: Number
     },
     password:{
-        type: Sequelize.TEXT,
-        set(value) {
-          const hash = bcrypt.hashSync(value, 10);
-          this.setDataValue('password', hash);
-        },
+        type: String
     },
     access_group:{
-        type: Sequelize.ENUM('retailer','supplier','admin','owner','user'),
-        defaultValue: 'user'
+        type: String, 
+        enum : ['retailer','supplier','admin','owner','user'], 
+        default: 'user'
     },
     server_admin:{
-        type: Sequelize.TINYINT(1),
-        allowNull: true,
-        defaultValue: 0
+        type: Number,
+        default: 0
     },
     password_reset_token:{
-        type: Sequelize.CHAR(32),
-        allowNull: true,
+        type: String
     },
     daily_reports:{
-        type: Sequelize.TINYINT(1),
-        allowNull: true,
-        defaultValue: 0
+        type: Number,
+        default: 0
     },
     monthly_reports:{
-        type: Sequelize.TINYINT(1),
-        allowNull: true,
-        defaultValue: 0
+        type: Number,
+        default: 0
     },
     notification_email_list:{
-        type: Sequelize.STRING(1024),
-        allowNull: true,
+        type: Array,
+        default:[{"body":String,"Send_by":String,"email":String,"date":String,"notf_id":Number}]
     },
     onboarding:{
-        type: Sequelize.INTEGER(1),
-        allowNull: true,
-        defaultValue: 0
+        type: Number,
+        default: 0
     },
     plan_status:{
-        type: Sequelize.ENUM('trial','basic','pro','enterprise'),
-        defaultValue: 'trial'
-    } 
+        type: String, 
+        enum : ['trial','basic','pro','enterprise'], 
+        default: 'trial'
+    },
+    user_status:{
+        type: String, 
+        enum : ['Active','Inactive'], 
+        default: 'Inactive'
+    },
+    deleted_at:{
+        type: Date
+      },
+      account_id:{
+        type : ObjectId,
+        ref: "Account"
+      } 
       
-    },{
-      timestamps: false
-  });
-
-  
-  
-
-
-
-    return User;
-  };
-  
+    },{timestamps: true});
+    userSchema.plugin(mongoosePaginate);
+module.exports = mongoose.model("User",userSchema);

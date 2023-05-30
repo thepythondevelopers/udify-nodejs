@@ -1,8 +1,6 @@
-const db = require("../models");
-const User = db.user;
-const Account = db.account;
-const UserToken = db.userToken;
-const Op = db.Sequelize.Op;
+const User = require("../models/user");
+const UserToken = require("../models/userToken");
+const Account = require("../models/account");
 const {validationResult} = require("express-validator");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require('uuid');
@@ -23,26 +21,236 @@ exports.signup =  (req,res)=>{
       })
   }
 
-  
-  guid = uuidv4();
-  guid = guid.replace(/-/g,""); 
-  req.body.guid = guid;
-
-  account_id  = uuidv4();
-  account_id  = account_id.replace(/-/g,""); 
-  req.body.account_id  = account_id ;
  
   api_token  = uuidv4();
   api_token  = api_token.replace(/-/g,""); 
-  
+  const hash = bcrypt.hashSync(req.body.password, 10);
   user_data = {
-    guid : req.body.guid,
     first_name: req.body.first_name,
     last_name : req.body.last_name,
-    password : req.body.password,
+    password : hash,
     email: req.body.email,
+    notification_email_list:req.body.notification_email_list
+  }
+
+  
+  User.create(user_data)
+  .then(async user => {    
+    const stripe_customer = await stripe.customers.create({
+      email: req.body.email,
+    });
+    
+    account_data = {
+      name : req.body.first_name,
+      api_token : api_token,
+      user_id : user._id,
+      stripe_customer_id : stripe_customer.id
+    }
+    account = await Account.create(account_data); 
+    update_content = {account_id:account._id};
+    await User.updateMany(
+      {_id: user._id},
+      {$set : update_content},
+    )
+
+    res.json({
+      first_name : user.first_name,
+      email : user.email,
+      id : user._id
+  });
+  }).catch((err)=>{
+    return res.status(400).json({
+        message : "Something Went Wrong.",
+        error : err 
+    })
+  })   
+  
+}; 
+
+exports.signin = (req,res) =>{
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+      return res.status(400).json({
+          error : errors.array()
+      })
+  }
+  
+  const {email} = req.body;
+  access_group ='user';
+  
+  User.findOne({email,access_group,'deleted_at' : null  }, function(err, user) {
+    
+   if (!user) {
+      return res.json({error:'User Not Found'});
+   } else {
+    bcrypt.compare(req.body.password, user.password, async function (err, result) {
+      if (result == true) {
+          //create token          
+          
+        var token = jwt.sign({ _id: user._id,email:user.email,access_group:user.access_group }, process.env.SECRET,{ expiresIn: '1d'  });
+        user_email = user.email;
+        user_role = user.role;
+        user_name = user.first_name +' '+ user.last_name; 
+
+        
+
+      await UserToken.create({token:token}).then( usertoken => {
+      }).catch(err => {
+        return res.status(500).send({
+          message:
+            err.message || "Some error occurred."
+        });
+      });
+      await UserToken.deleteOne({ createdAt:{$lte:moment().subtract(1, 'days').toDate()} });
+
+        return res.json({token,user:{user_name,user_email,user_role}});
+      } else {
+        return res.json({error:"Incorrect Password"});
+      }
+    });
+  }
+}).catch(err => {
+  return res.status(500).send({
+    message:
+      err.message || "Some error occurred."
+  });
+});
+
+  
+
+
+}
+
+exports.signinSupplier = (req,res) =>{
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+      return res.status(400).json({
+          error : errors.array()
+      })
+  }
+  
+  const {email} = req.body;
+  access_group ='supplier';
+  
+  User.findOne({email,access_group,'deleted_at' : null  }, function(err, user) {
+    
+   if (!user) {
+      return res.json({error:'User Not Found'});
+   } else {
+    bcrypt.compare(req.body.password, user.password, async function (err, result) {
+      if (result == true) {
+          //create token          
+          
+        var token = jwt.sign({ _id: user._id,email:user.email,access_group:user.access_group }, process.env.SECRET,{ expiresIn: '1d'  });
+        user_email = user.email;
+        user_role = user.role;
+        user_name = user.first_name +' '+ user.last_name; 
+
+        
+
+      await UserToken.create({token:token}).then( usertoken => {
+      }).catch(err => {
+        return res.status(500).send({
+          message:
+            err.message || "Some error occurred."
+        });
+      });
+      await UserToken.deleteOne({ createdAt:{$lte:moment().subtract(1, 'days').toDate()} });
+
+        return res.json({token,user:{user_name,user_email,user_role}});
+      } else {
+        return res.json({error:"Incorrect Password"});
+      }
+    });
+  }
+}).catch(err => {
+  return res.status(500).send({
+    message:
+      err.message || "Some error occurred."
+  });
+});
+
+  
+
+
+}
+
+
+exports.signinAdmin = (req,res) =>{
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+      return res.status(400).json({
+          error : errors.array()
+      })
+  }
+  
+  const {email} = req.body;
+  access_group ='admin';
+  
+  User.findOne({email,access_group,'deleted_at' : null  }, function(err, user) {
+    
+   if (!user) {
+      return res.json({error:'User Not Found'});
+   } else {
+    bcrypt.compare(req.body.password, user.password, async function (err, result) {
+      if (result == true) {
+          //create token          
+          
+        var token = jwt.sign({ _id: user._id,email:user.email,access_group:user.access_group }, process.env.SECRET,{ expiresIn: '1d'  });
+        user_email = user.email;
+        user_role = user.role;
+        user_name = user.first_name +' '+ user.last_name; 
+
+        
+
+      await UserToken.create({token:token}).then( usertoken => {
+      }).catch(err => {
+        return res.status(500).send({
+          message:
+            err.message || "Some error occurred."
+        });
+      });
+      await UserToken.deleteOne({ createdAt:{$lte:moment().subtract(1, 'days').toDate()} });
+
+        return res.json({token,user:{user_name,user_email,user_role}});
+      } else {
+        return res.json({error:"Incorrect Password"});
+      }
+    });
+  }
+}).catch(err => {
+  return res.status(500).send({
+    message:
+      err.message || "Some error occurred."
+  });
+});
+
+  
+
+
+}
+
+exports.signupSupplier =  (req,res)=>{
+  
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+      return res.status(400).json({
+          error : errors.array()
+      })
+  }
+
+ 
+  api_token  = uuidv4();
+  api_token  = api_token.replace(/-/g,""); 
+  const hash = bcrypt.hashSync(req.body.password, 10);
+  user_data = {
+    first_name: req.body.first_name,
+    last_name : req.body.last_name,
+    password : hash,
+    email: req.body.email,
+    access_group : 'supplier',
     notification_email_list:req.body.notification_email_list,
-    account_id : req.body.account_id 
+    phone : req.body.phone
   }
 
   
@@ -56,97 +264,38 @@ exports.signup =  (req,res)=>{
     
     
     account_data = {
-      guid : req.body.account_id,
       name : req.body.first_name,
       api_token : api_token,
-      public_id : user.guid,
-      stripe_customer_id : stripe_customer.id
+      user_id : user._id,
+      stripe_customer_id : stripe_customer.id,
+      address_street : req.body.address_street,
+      address_unit : req.body.address_unit,
+      address_city : req.body.address_city,
+      address_state : req.body.address_state,
+      address_zip : req.body.address_zip,
+      address_country : req.body.address_country,
+      about : req.body.about
     }
-    await Account.create(account_data); 
-
+     
+    account = await Account.create(account_data); 
+    update_content = {account_id:account._id};
+    await User.updateMany(
+      {_id: user._id},
+      {$set : update_content},
+    )
     res.json({
       first_name : user.first_name,
       email : user.email,
-      id : user.id
+      id : user._id
   });
   }).catch((err)=>{
     return res.status(400).json({
-        message : "Unable to sabe in db",
+        message : "Something Went Wrong.",
         error : err 
     })
   })   
   
-}; 
-
-exports.signin = (req,res) =>{
-  if(req.body.role=='admin'){
-    userquery = User.findOne({
-      where: {
-          email: req.body.email,
-          access_group:"admin"
-             }
-    })  
-  }else{
-    userquery = User.findOne({
-      where: {
-          email: req.body.email,
-          deleted_at: {
-            [Op.is]: null, 
-          },
-          access_group: {[Op.not]:'admin'}
-             }
-    })
-  }
-  userquery.then(function (user) {
-   if (!user) {
-      res.json({error:'User Not Found'});
-   } else {
-    bcrypt.compare(req.body.password, user.password, async function (err, result) {
-      if (result == true) {
-          //create token
-          
-        var token = jwt.sign({ id: user.guid, access_group: user.access_group,email:user.email }, process.env.SECRET,{ expiresIn: '1d'  });
-        guid = uuidv4();
-        guid = guid.replace(/-/g,"");
-        user_token_data = {
-          id :guid,
-          token : token 
-        }
-        await UserToken.create(user_token_data).then(function (user_token) {
-          
-        }).catch(err => {
-          res.status(500).send({
-            message:
-              err.message || "Some error occurred."
-          });
-        });
-        
-        
-        await UserToken.destroy({
-          where: {
-            created_at: {
-              [Op.lte]: moment().subtract(2, 'days').toDate()
-            }
-          }
-        })
-        email = user.email;
-        access_group = user.access_group;
-        res.json({token,user:{email,access_group}});
-      } else {
-        res.json({error:"Incorrect Password"});
-      }
-    });
-  }
-}).catch(err => {
-  res.status(500).send({
-    message:
-      err.message || "Some error occurred."
-  });
-});
 }
-
-
-
 
 
 
@@ -165,22 +314,22 @@ exports.signin = (req,res) =>{
     content =  { 
       password_reset_token: token
     }
-    User.findOne({
-      where: {
-          email: req.body.email
-             }
-    }).then(function (user) {
+    User.findOne({email: req.body.email}).then(function (user) {
      if (!user) {
         res.json({error:'User Not Found'});
      } else {
+      User.findOneAndUpdate(
+        {email: req.body.email},
+        {$set : content},
+        {new: true},
+        async (err,data) =>  {
+          if(err){
+              return res.status(404).json({
+                  error : err
+              })
+          
+          } 
 
-    User.update(
-      content,
-      { where: { email: req.body.email }
-     }
-    )
-    .then(async data => {
-      
       //url = process.env.BASE_URL+'api/confirm-password/'
       url = 'http://udify.pamsar.com/reset-password/'+token
       try {
@@ -213,11 +362,7 @@ exports.signin = (req,res) =>{
 
   exports.change_password = (req,res)=>{
     const password_reset_token = req.params.password_reset_token;
-    User.findOne({
-      where: {
-        password_reset_token: password_reset_token
-             }
-    }).then(function (user) {
+    User.findOne({password_reset_token: password_reset_token}).then(function (user) {
      if (!user) {
         res.json({error:'Token Expire or Incorrect'});
      } else { 
@@ -226,12 +371,18 @@ exports.signin = (req,res) =>{
         password_reset_token: ""
       }
       
-      User.update(
-        content,
-        { where: { password_reset_token: password_reset_token }
-       }
-      )
-      .then(data => {
+      
+        User.findOneAndUpdate(
+          { password_reset_token: password_reset_token },
+          {$set : content},
+          {new: true},
+          async (err,data) =>  {
+              if(err){
+                  return res.status(404).json({
+                      error : err
+                  })
+              
+              }
         
         res.send({message:'Password Changed Successfully.'});
       })
@@ -346,20 +497,26 @@ exports.signin = (req,res) =>{
   
 
 exports.logout = (req,res) =>{
-  const token =
-  req.body.token || req.query.token || req.headers["x-access-token"];
-  UserToken.destroy({
-    where: {
-       token: token
-    }
- }).then(function(rowDeleted){
-   if(rowDeleted === 1){
-      res.status(200).send({
-        message:"Logout Successfully"
+  const token = req.headers["x-access-token"];
+  UserToken.deleteOne({token: token}).then(function(rowDeleted){
+   
+    if(rowDeleted.deletedCount==1){
+    return  res.status(200).send({
+        message:"Logout Successfully."
       });
     }
+    if(rowDeleted.deletedCount==0){
+      return res.status(200).send({
+        message:"Not Found"
+      });
+    }
+    
+    return res.status(401).send({
+        message:"Something Went Wrong"
+      });
+    
  }, function(err){
-  res.status(500).send({
+  return res.status(500).send({
     message:
       err.message || "Some error occurred."
   }); 

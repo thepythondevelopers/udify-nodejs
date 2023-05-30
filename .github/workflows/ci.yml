@@ -9,34 +9,30 @@ jobs:
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: /var/www/udify_project/udify-nodejs
+        working-directory: /var/www/udify_mongo/udify-mongo
     steps:
-      - name: Run Git stash
-        run: git stash
+      - name: add directory into safe 
+        run: git config --global --add safe.directory /var/www/udify_mongo/udify-mongo
       - name: Taking Git Pull
-        run: git pull
-      - name: Get Back the .env file
-        run: git stash pop
+        run: GIT_SSH_COMMAND='ssh -i ~/.ssh/mongo' git pull
 
-  Creating_docker_Image:
+  Build:
     needs: Git_Pull
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: /var/www/udify_project/udify-nodejs
+        working-directory: /var/www/udify_mongo/udify-mongo
     steps:
-      - name: Creating_docker_Image
-        run: sudo docker build -t udifyapi .
+      - name: Install dependencies
+        run: npm install 
+
 
   Deploy_Image:
-    needs: Creating_docker_Image
+    needs: Build 
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: /var/www/udify_project/
+        working-directory: /var/www/udify_mongo/udify-mongo
     steps:
-      - name: Deploy the Deploy_Image
-        run: sudo docker-compose up -d
-
-
-
+      - name: Deploy the code
+        run: pm2 reload 0

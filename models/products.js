@@ -1,75 +1,80 @@
-module.exports = (sequelize, Sequelize) => {
-    const Product = sequelize.define("products", {
-      guid : {
-          type: Sequelize.CHAR(32),
-        primaryKey: true,
-      },
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const {ObjectId} = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
+const ProductSchema = new Schema({  
       store_id : {
-        type: Sequelize.CHAR(32),
-        allowNull: false,
+        type: String,
+        required : true
     },
     body_html: {
-        type: Sequelize.TEXT()
+        type: String
       },
-      created_at :{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
-      },
-      updated_at:{
-        allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.fn('NOW')
-      }, 
       handle: {
-        type: Sequelize.STRING(),
+        type: String
     },
     id :{
-        type: Sequelize.CHAR(30),
-        allowNull: false,
+        type: String,
+        required : true
     },
     images:{
-        type: Sequelize.TEXT()
+        type: String
     },
     options:{
-        type: Sequelize.TEXT()
+        type: String
     },
     product_type:{
-        type: Sequelize.STRING(),
+        type: String
     },
     published_at:{        
-        type: Sequelize.DATE,
+        type: Date,
     },
     published_scope:{
-        type: Sequelize.CHAR(6)
+        type: String
     },
     tags:{
-        type: Sequelize.TEXT()
+        type: String
     },
     template_suffix:{
-        type: Sequelize.CHAR(50)
+        type: String
     },
     title:{
-        type: Sequelize.STRING(),
+        type: String
     },
     metafields_global_title_tag:{
-        type: Sequelize.STRING(),
+        type: String
     },
     metafields_global_description_tag:{
-        type: Sequelize.STRING(),
+        type: String
     },
     vendor:{
-        type: Sequelize.STRING(),
+        type: String
     },
     status:{
-        type: Sequelize.STRING(),
+        type: String
+    },
+    user_id:{
+        type : ObjectId,
+        ref: "User"
+    },
+    supplier_id:{
+        type : ObjectId,
+        ref: "User"
+    },
+    supplier_product_id:{
+        type : String
     },
     sys_updated_at:{
-        type: Sequelize.DATE,
+        type: Date,
+        default: Date.now
     }
       
-    },{
-      timestamps: false,
-  });
-    return Product;
-  };
+    },{timestamps: true});
+
+    // ProductSchema.virtual('ProductVariant', {
+    //     ref: 'ProductVariant',
+    //     localField: 'id',
+    //     foreignField: 'product_id'
+    //   });
+      ProductSchema.plugin(mongoosePaginate);
+    module.exports = mongoose.model("Product",ProductSchema);
